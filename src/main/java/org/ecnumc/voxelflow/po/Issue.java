@@ -7,15 +7,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Date;
 
 /**
- * 故事修改记录
+ * 问题
  * @author liudongyu
  */
 @Data
-@Table(name = "user_story_rel")
-public class UserStoryRelation {
+@Table(name = "issue")
+public class Issue {
 	/**
 	 * 自增主键
 	 */
@@ -24,40 +25,32 @@ public class UserStoryRelation {
 	private Long id;
 
 	/**
-	 * 需求编号
-	 * @see org.ecnumc.voxelflow.po.Story#getCode
+	 * 问题编号
 	 */
-	@Pattern(regexp = "^[A-Z][A-Z0-9]+-\\d+$")
+	@Pattern(regexp = "^BUG-\\d+$")
 	private String code;
 
 	/**
-	 * 用户 UUID
-	 * @see org.ecnumc.voxelflow.po.User#getUid
+	 * 问题标题
 	 */
-	private String uid;
+	private String title;
 
 	/**
-	 * 修改描述，如同意/拒绝理由
+	 * 问题描述
 	 */
 	private String description;
 
 	/**
-	 * 关系类型
-	 * @see org.ecnumc.voxelflow.enumeration.RelationType
+	 * 问题状态
+	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
 	 */
-	private String relationType;
+	private String status;
 
 	/**
-	 * 故事旧状态
-	 * @see org.ecnumc.voxelflow.enumeration.StoryStatus
+	 * 问题优先级
 	 */
-	private String oldStatus;
-
-	/**
-	 * 故事新状态
-	 * @see org.ecnumc.voxelflow.enumeration.StoryStatus
-	 */
-	private String newStatus;
+	@PositiveOrZero
+	private Integer priority;
 
 	/**
 	 * 创建人

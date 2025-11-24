@@ -14,6 +14,8 @@ public enum RequirementType {
 	DATAPACK("数据包"),
 	MODPACK("整合包"),
 	SERVER("服务器"),
+	EFFICIENCY("工程效率"),
+	RECONSTRUCTION("技术改造"),
 	OTHER("其它");
 
 	private final String name;

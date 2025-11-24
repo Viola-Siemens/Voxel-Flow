@@ -1,7 +1,12 @@
 package org.ecnumc.voxelflow.enumeration;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+
+import java.util.Set;
+
+import static org.ecnumc.voxelflow.enumeration.UserRole.*;
 
 /**
  * @author liudongyu
@@ -9,7 +14,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum RequirementStatus {
-	REVIEWING("审核中") {
+	REVIEWING("审核中", ImmutableSet.of(BUSINESS, DIAGNOSIS)) {
 		@Override
 		public RequirementStatus approved() {
 			return COUNTERSIGNING;
@@ -20,7 +25,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	COUNTERSIGNING("三方会签中") {	//产品、信息安全、项目负责人
+	COUNTERSIGNING("三方会签中", ImmutableSet.of(PRODUCT, SECURITY, DEVELOPMENT, ART, MODEL, BUILDING)) {	//产品、信息安全、项目负责人
 		@Override
 		public RequirementStatus approved() {
 			return REQUIREMENT_ANALYSIS;
@@ -31,7 +36,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	REQUIREMENT_ANALYSIS("需求分析中") {
+	REQUIREMENT_ANALYSIS("需求分析中", ImmutableSet.of(PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
 			return REQUIREMENT_REVIEWING;
@@ -42,7 +47,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	REQUIREMENT_REVIEWING("需求评审中") {
+	REQUIREMENT_REVIEWING("需求评审中", ImmutableSet.of(DEVELOPMENT, TEST, ART, MODEL, BUILDING)) {
 		@Override
 		public RequirementStatus approved() {
 			return DESIGNING;
@@ -53,7 +58,7 @@ public enum RequirementStatus {
 			return REQUIREMENT_ANALYSIS;
 		}
 	},
-	DESIGNING("设计中") {
+	DESIGNING("设计中", ImmutableSet.of(ARCHITECTURE)) {
 		@Override
 		public RequirementStatus approved() {
 			return SCHEDULING;
@@ -64,7 +69,7 @@ public enum RequirementStatus {
 			return REQUIREMENT_ANALYSIS;
 		}
 	},
-	SCHEDULING("排期中") {
+	SCHEDULING("排期中", ImmutableSet.of(PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
 			return DEVELOPING;
@@ -75,7 +80,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	DEVELOPING("开发中") {
+	DEVELOPING("开发中", ImmutableSet.of(DEVELOPMENT, ART, MODEL, BUILDING)) {
 		@Override
 		public RequirementStatus approved() {
 			return TESTING;
@@ -86,7 +91,7 @@ public enum RequirementStatus {
 			return SCHEDULING;
 		}
 	},
-	TESTING("测试中") {
+	TESTING("测试中", ImmutableSet.of(TEST)) {
 		@Override
 		public RequirementStatus approved() {
 			return CHECKING;
@@ -97,7 +102,7 @@ public enum RequirementStatus {
 			return DEVELOPING;
 		}
 	},
-	CHECKING("验收中") {
+	CHECKING("验收中", ImmutableSet.of(BUSINESS)) {
 		@Override
 		public RequirementStatus approved() {
 			return RELEASED;
@@ -108,7 +113,7 @@ public enum RequirementStatus {
 			return DEVELOPING;
 		}
 	},
-	RELEASED("已发布") {
+	RELEASED("已发布", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
 			return RELEASED;
@@ -119,7 +124,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	REJECTED("已打回") {
+	REJECTED("已打回", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
 			return REJECTED;
@@ -130,7 +135,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	CANCELED("已取消") {
+	CANCELED("已取消", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
 			return CANCELED;
@@ -143,6 +148,7 @@ public enum RequirementStatus {
 	};
 
 	private final String name;
+	private final Set<UserRole> operableRoles;
 
 	/**
 	 * 负责人完成该阶段

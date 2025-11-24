@@ -10,12 +10,12 @@ import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
- * 故事修改记录
+ * 问题修改记录
  * @author liudongyu
  */
 @Data
-@Table(name = "user_story_rel")
-public class UserStoryRelation {
+@Table(name = "user_issue_rel")
+public class UserIssueRelation {
 	/**
 	 * 自增主键
 	 */
@@ -25,14 +25,14 @@ public class UserStoryRelation {
 
 	/**
 	 * 需求编号
-	 * @see org.ecnumc.voxelflow.po.Story#getCode
+	 * @see Issue#getCode
 	 */
-	@Pattern(regexp = "^[A-Z][A-Z0-9]+-\\d+$")
+	@Pattern(regexp = "^BUG-\\d+$")
 	private String code;
 
 	/**
 	 * 用户 UUID
-	 * @see org.ecnumc.voxelflow.po.User#getUid
+	 * @see User#getUid
 	 */
 	private String uid;
 
@@ -48,14 +48,14 @@ public class UserStoryRelation {
 	private String relationType;
 
 	/**
-	 * 故事旧状态
-	 * @see org.ecnumc.voxelflow.enumeration.StoryStatus
+	 * 问题旧状态
+	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
 	 */
 	private String oldStatus;
 
 	/**
-	 * 故事新状态
-	 * @see org.ecnumc.voxelflow.enumeration.StoryStatus
+	 * 问题新状态
+	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
 	 */
 	private String newStatus;
 

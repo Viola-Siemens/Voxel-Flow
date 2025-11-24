@@ -14,6 +14,10 @@ public enum UserRole {
 	 */
 	SECURITY,
 	/**
+	 * 架构，负责架构设计，如系统架构、数据库架构、网络架构等
+	 */
+	ARCHITECTURE,
+	/**
 	 * 研发，负责技术开发，如模组工程师、数据包工程师、整合包工程师等
 	 */
 	DEVELOPMENT,

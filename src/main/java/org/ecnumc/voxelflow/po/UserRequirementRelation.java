@@ -42,6 +42,12 @@ public class UserRequirementRelation {
 	private String description;
 
 	/**
+	 * 关系类型
+	 * @see org.ecnumc.voxelflow.enumeration.RelationType
+	 */
+	private String relationType;
+
+	/**
 	 * 需求旧状态
 	 * @see org.ecnumc.voxelflow.enumeration.RequirementStatus
 	 */

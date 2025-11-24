@@ -2,7 +2,10 @@ package org.ecnumc.voxelflow.po;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 /**
@@ -32,6 +35,23 @@ public class User {
 	 * 密码
 	 */
 	private String password;
+
+	/**
+	 * 邮箱
+	 */
+	private String email;
+
+	/**
+	 * 是否已验证邮箱
+	 * @see org.ecnumc.voxelflow.enumeration.VerifiedStatus
+	 */
+	private String emailVerified;
+
+	/**
+	 * 用户状态，如是否已注销
+	 * @see org.ecnumc.voxelflow.enumeration.UserStatus
+	 */
+	private String userStatus;
 
 	/**
 	 * 创建人
