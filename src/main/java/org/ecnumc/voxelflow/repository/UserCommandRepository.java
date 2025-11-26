@@ -30,8 +30,6 @@ public class UserCommandRepository {
 		user.setUsername(username);
 		user.setPassword(password);
 		user.setEmail(email);
-		user.setCreatedBy("");
-		user.setUpdatedBy("");
 		this.userMapper.insert(user);
 	}
 }

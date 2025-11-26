@@ -32,7 +32,7 @@ public final class BaseResp<T extends Serializable> implements Serializable {
 	 * @param <T>	响应数据类型
 	 * @return 响应
 	 */
-	public static <T extends Serializable> BaseResp<T> success(T data) {
+	public static <T extends Serializable> BaseResp<T> success(@Nullable T data) {
 		return new BaseResp<>(200, "", data);
 	}
 	/**

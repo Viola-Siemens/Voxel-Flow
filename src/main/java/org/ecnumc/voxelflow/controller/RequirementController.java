@@ -1,0 +1,73 @@
+package org.ecnumc.voxelflow.controller;
+
+import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.enumeration.ClientErrorCode;
+import org.ecnumc.voxelflow.req.RequirementCreateReq;
+import org.ecnumc.voxelflow.req.RequirementUpdateReq;
+import org.ecnumc.voxelflow.resp.BaseResp;
+import org.ecnumc.voxelflow.resp.RequirementResp;
+import org.ecnumc.voxelflow.service.RequirementService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+/**
+ * 需求控制器
+ * @author liudongyu
+ */
+@RestController
+@RequestMapping("/requirement")
+@Slf4j
+public class RequirementController {
+	@Autowired
+	private RequirementService requirementService;
+
+	/**
+	 * 创建需求
+	 * @param req 创建需求请求
+	 * @param request HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/create")
+	public BaseResp<RequirementResp> createRequirement(@Validated @RequestBody RequirementCreateReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+
+		RequirementResp resp = this.requirementService.createRequirement(
+			req.getTitle(),
+			req.getDescription(),
+			req.getPriority(),
+			req.getRequirementType(),
+			uid
+		);
+
+		if (resp == null) {
+			log.error("Failed to create requirement for uid: {}", uid);
+			return BaseResp.error(ClientErrorCode.ERROR_1421);
+		}
+
+		log.info("Requirement created successfully: {}", resp.getCode());
+		return BaseResp.success(resp);
+	}
+
+	/**
+	 * 更新需求
+	 * @param req 更新需求请求
+	 * @param request HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/update")
+	public BaseResp<RequirementResp> updateRequirement(@Validated @RequestBody RequirementUpdateReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+
+		ClientErrorCode errorCode = this.requirementService.updateRequirement(
+			req.getCode(), req.getTitle(), req.getDescription(),
+			req.getPriority(), req.getRequirementType(), uid
+		);
+		if(errorCode == null) {
+			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+		}
+		return BaseResp.error(errorCode);
+	}
+}

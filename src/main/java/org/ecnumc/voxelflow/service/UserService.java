@@ -57,7 +57,10 @@ public class UserService {
 			return null;
 		}
 		String token = UUID.randomUUID().toString();
-		this.userValidationRepository.setToken(user.getUid(), token);
-		return TokenResp.builder().uid(user.getUid()).token(token).build();
+		if(user.getUid() != null) {
+			this.userValidationRepository.setToken(user.getUid(), token);
+			return TokenResp.builder().uid(user.getUid()).token(token).build();
+		}
+		return null;
 	}
 }

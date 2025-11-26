@@ -12,6 +12,8 @@ import org.ecnumc.voxelflow.po.UserRequirementRelation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nullable;
+
 /**
  * 需求查询 Repository
  * @author liudongyu
@@ -40,5 +42,15 @@ public class RequirementQueryRepository {
 				"status", RequirementStatus.REJECTED.name(), RequirementStatus.CANCELED.name(), RequirementStatus.RELEASED.name()
 		)).intValue();
 		return IndexBo.builder().assigned(assigned).totalUnassigned(totalUnassigned).build();
+	}
+
+	/**
+	 * 根据 code 获取需求
+	 * @param code	需求 code
+	 * @return 需求
+	 */
+	@Nullable
+	public Requirement getRequirementByCode(String code) {
+		return this.requirementMapper.selectOne(new QueryWrapper<Requirement>().eq("code", code));
 	}
 }

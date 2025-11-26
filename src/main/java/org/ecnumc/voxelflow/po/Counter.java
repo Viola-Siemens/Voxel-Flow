@@ -2,21 +2,22 @@ package org.ecnumc.voxelflow.po;
 
 import lombok.Data;
 
+import javax.annotation.Nonnull;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
-import javax.validation.constraints.PositiveOrZero;
+import javax.validation.constraints.Positive;
 import java.util.Date;
 
 /**
- * 用户故事
+ * 计数器，用于问题、需求、故事的计数
  * @author liudongyu
  */
 @Data
-@Table(name = "story")
-public class Story {
+@Table(name = "counter")
+public class Counter {
 	/**
 	 * 自增主键
 	 */
@@ -25,38 +26,17 @@ public class Story {
 	private Long id;
 
 	/**
-	 * 故事编号
+	 * 编号 key
 	 */
-	@Pattern(regexp = "^[A-Z][A-Z0-9]+-\\d+$")
+	@Pattern(regexp = "^[A-Z][A-Z0-9]+$")
 	private String code;
 
 	/**
-	 * 对应的需求编号
+	 * 当前最新 code 的编号数字
 	 */
-	@Pattern(regexp = "^REQ-\\d+$")
-	private String reqCode;
-
-	/**
-	 * 故事标题
-	 */
-	private String title;
-
-	/**
-	 * 故事描述
-	 */
-	private String description;
-
-	/**
-	 * 故事状态
-	 * @see org.ecnumc.voxelflow.enumeration.StoryStatus
-	 */
-	private String status;
-
-	/**
-	 * 故事优先级
-	 */
-	@PositiveOrZero
-	private Integer priority;
+	@Nonnull
+	@Positive
+	private Integer cnt;
 
 	/**
 	 * 创建人

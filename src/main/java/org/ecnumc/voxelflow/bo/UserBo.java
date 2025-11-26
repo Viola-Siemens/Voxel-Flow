@@ -32,10 +32,19 @@ public class UserBo {
 	 */
 	private Set<UserRole> role;
 
+	/**
+	 * 是否是超级管理员
+	 * @return 是否是超级管理员
+	 */
 	public boolean isSuperAdmin() {
 		return this.role.contains(UserRole.SUPER_ADMIN);
 	}
 
+	/**
+	 * 是否可操作
+	 * @param operableRoles	可操作角色
+	 * @return 是否可操作
+	 */
 	public boolean isOperable(Set<UserRole> operableRoles) {
 		return CollectionUtils.containsAny(this.role, operableRoles);
 	}

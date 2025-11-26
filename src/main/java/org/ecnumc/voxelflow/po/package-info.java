@@ -1,8 +1,8 @@
-@FieldsAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
+@FieldsAreNullableByDefault
+@MethodsReturnNullableByDefault
+@ParametersAreNullableByDefault
 package org.ecnumc.voxelflow.po;
 
-import org.ecnumc.voxelflow.annotation.FieldsAreNonnullByDefault;
-import org.ecnumc.voxelflow.annotation.MethodsReturnNonnullByDefault;
-import org.ecnumc.voxelflow.annotation.ParametersAreNonnullByDefault;
+import org.ecnumc.voxelflow.annotation.FieldsAreNullableByDefault;
+import org.ecnumc.voxelflow.annotation.MethodsReturnNullableByDefault;
+import org.ecnumc.voxelflow.annotation.ParametersAreNullableByDefault;
