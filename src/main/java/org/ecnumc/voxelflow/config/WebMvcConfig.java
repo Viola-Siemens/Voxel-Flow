@@ -22,10 +22,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(this.tokenInterceptor)
-			.addPathPatterns("/**")  // 拦截所有请求
+			.addPathPatterns("/**")	// 拦截所有请求
 			.excludePathPatterns(
-				"/user/sign-up",  // 排除注册接口
-				"/user/log-in"    // 排除登录接口
+					"/user/sign-up",	// 排除注册接口
+					"/user/log-in",		// 排除登录接口
+					"/webhook"			// 排除 WebHook 接口
 			);
 	}
 }

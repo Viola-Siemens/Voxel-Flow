@@ -15,6 +15,7 @@ CREATE TABLE `user` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `uk_uid` (`uid`) USING BTREE,
     UNIQUE KEY `uk_username` (`username`) USING BTREE,
+    UNIQUE KEY `uk_email` (`email`) USING BTREE,
     KEY `idx_updated_at` (`updated_at`) USING BTREE
 ) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='用户表';
 

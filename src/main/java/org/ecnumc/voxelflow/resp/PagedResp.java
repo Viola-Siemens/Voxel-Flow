@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Data
 @Builder
-public class PagedResp<R extends Serializable, T extends BaseResp<R>> implements Serializable {
+public class PagedResp<T extends Serializable> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 当前页
@@ -30,5 +30,5 @@ public class PagedResp<R extends Serializable, T extends BaseResp<R>> implements
 	/**
 	 * 当前页的数据
 	 */
-	protected final List<T> list;
+	private final List<T> list;
 }

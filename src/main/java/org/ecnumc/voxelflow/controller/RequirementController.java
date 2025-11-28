@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 需求控制器
+ * 需求 Controller
  * @author liudongyu
  */
 @RestController
@@ -69,5 +69,20 @@ public class RequirementController {
 			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
+	}
+
+	/**
+	 * 查询需求
+	 * @param code 需求编码
+	 * @return 需求响应
+	 */
+	@GetMapping("/query")
+	public BaseResp<RequirementResp> queryRequirement(@Validated @RequestParam(value = "code") String code) {
+		RequirementResp resp = this.requirementService.queryRequirement(code);
+		if (resp == null) {
+			log.warn("Requirement not found: {}", code);
+			return BaseResp.error(ClientErrorCode.ERROR_1420);
+		}
+		return BaseResp.success(resp);
 	}
 }

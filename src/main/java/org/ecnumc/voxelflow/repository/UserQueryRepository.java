@@ -42,6 +42,11 @@ public class UserQueryRepository {
 		return this.userMapper.selectOne(new QueryWrapper<User>().eq("uid", uid));
 	}
 
+	@Nullable
+	public User getByEmail(String email) {
+		return this.userMapper.selectOne(new QueryWrapper<User>().eq("email", email));
+	}
+
 	/**
 	 * 获取用户的所有角色
 	 * @param uid 用户 UID
