@@ -1,5 +1,6 @@
 package org.ecnumc.voxelflow.po;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -7,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Date;
 
 /**
@@ -15,6 +17,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "commit")
+@TableName(value = "commit")
 public class Commit {
 	/**
 	 * 自增主键
@@ -30,9 +33,9 @@ public class Commit {
 	private String commitId;
 
 	/**
-	 * 仓库名称
+	 * 仓库地址，如：{@code http://github.com/用户名/仓库名}
 	 */
-	private String repoName;
+	private String repoUrl;
 
 	/**
 	 * 提交类型
@@ -50,6 +53,23 @@ public class Commit {
 	 * 提交信息
 	 */
 	private String message;
+
+	/**
+	 * 提交地址，如：{@code http://github.com/用户名/仓库名/commit/提交标识符}
+	 */
+	private String commitUrl;
+
+	/**
+	 * 修改文件数
+	 */
+	@PositiveOrZero
+	private Integer file;
+
+	/**
+	 * 修改行数
+	 */
+	@PositiveOrZero
+	private Integer line;
 
 	/**
 	 * 创建人

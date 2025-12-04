@@ -1,5 +1,6 @@
 package org.ecnumc.voxelflow.po;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.annotation.Nonnull;
@@ -17,6 +18,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "counter")
+@TableName(value = "counter")
 public class Counter {
 	/**
 	 * 自增主键

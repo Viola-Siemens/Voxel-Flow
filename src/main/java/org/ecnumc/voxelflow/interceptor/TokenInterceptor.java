@@ -24,6 +24,14 @@ public class TokenInterceptor implements HandlerInterceptor {
 
 	private static final String JSON_ERROR_1490 = JSON.toJSONString(ClientErrorCode.ERROR_1490, JsonUtil.CONFIG);
 
+	/**
+	 * 拦截器处理逻辑
+	 * @param request current HTTP request
+	 * @param response current HTTP response
+	 * @param handler chosen handler to execute, for type and/or instance evaluation
+	 * @return true if the execution chain should proceed with the next interceptor or the handler itself.
+	 * @throws Exception IO 异常
+	 */
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		// 从请求头获取 token 和 uid

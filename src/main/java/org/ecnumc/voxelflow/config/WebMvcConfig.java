@@ -26,7 +26,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 			.excludePathPatterns(
 					"/user/sign-up",	// 排除注册接口
 					"/user/log-in",		// 排除登录接口
-					"/webhook"			// 排除 WebHook 接口
+					"/webhook",			// 排除 WebHook 接口
+					"/error"			// 排除 Error 接口
 			);
 	}
 }

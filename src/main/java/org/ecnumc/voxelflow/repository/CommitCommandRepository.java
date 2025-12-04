@@ -6,6 +6,8 @@ import org.ecnumc.voxelflow.po.Commit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Nullable;
+
 /**
  * 提交记录执行 Repository
  * @author liudongyu
@@ -23,11 +25,15 @@ public class CommitCommandRepository {
 	 * @param message	提交信息
 	 * @param uid		提交人
 	 */
-	public void add(String type, String code, String message, String uid) {
+	public void add(String commitId, String repoUrl, String type, String code, String message,
+					@Nullable String commitUrl, String uid) {
 		Commit commit = new Commit();
+		commit.setCommitId(commitId);
+		commit.setRepoUrl(repoUrl);
 		commit.setCommitType(type);
 		commit.setCode(code);
 		commit.setMessage(message);
+		commit.setCommitUrl(commitUrl);
 		commit.setCreatedBy(uid);
 		this.commitMapper.insert(commit);
 	}

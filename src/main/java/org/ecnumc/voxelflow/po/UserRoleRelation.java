@@ -1,5 +1,6 @@
 package org.ecnumc.voxelflow.po;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "user_role_rel")
+@TableName(value = "user_role_rel")
 public class UserRoleRelation {
 	/**
 	 * 自增主键

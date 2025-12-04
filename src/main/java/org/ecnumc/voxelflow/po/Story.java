@@ -1,5 +1,6 @@
 package org.ecnumc.voxelflow.po;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,7 @@ import java.util.Date;
  */
 @Data
 @Table(name = "story")
+@TableName(value = "story")
 public class Story {
 	/**
 	 * 自增主键

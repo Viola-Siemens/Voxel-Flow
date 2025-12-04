@@ -28,11 +28,18 @@ public class CommitCommandService {
 	 */
 	public void push(JSONObject payload) {
 		JSONArray commits = payload.getJSONArray("commits");
+		JSONObject repository = payload.getJSONObject("repository");
+		String repoUrl = repository.getString("html_url");
 		Pattern pattern = Pattern.compile("^" + CommitType.getRegex() + "\\(([A-Z][A-Z0-9]+-\\d+)\\):[\\s]{0,2}(.*)$");
 		commits.forEach(commit -> {
 			JSONObject commitObject = (JSONObject)commit;
 			String message = commitObject.getString("message");
-			String authorEmail = commitObject.getJSONObject("author").getString("email");
+			JSONObject committer = commitObject.getJSONObject("committer");
+			if(committer == null) {
+				return;
+			}
+			String authorEmail = committer.getString("email");
+			String url = commitObject.getString("url");
 			User user = this.userQueryRepository.getByEmail(authorEmail);
 			if(user == null || user.getUid() == null) {
 				return;
@@ -42,7 +49,11 @@ public class CommitCommandService {
 				String type = matcher.group(0);
 				String field = matcher.group(1);
 				String msg = matcher.group(2);
-				this.commitCommandRepository.add(type, field, msg, user.getUid());
+				this.commitCommandRepository.add(
+						commitObject.getString("id"), repoUrl,
+						type, field, msg, url,
+						user.getUid()
+				);
 			}
 		});
 	}

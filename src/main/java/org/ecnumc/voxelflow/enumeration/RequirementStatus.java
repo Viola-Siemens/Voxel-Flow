@@ -35,6 +35,11 @@ public enum RequirementStatus {
 		public RequirementStatus rejected() {
 			return REJECTED;
 		}
+
+		@Override
+		public boolean waitingForAllApprovals() {
+			return true;
+		}
 	},
 	REQUIREMENT_ANALYSIS("需求分析中", ImmutableSet.of(PRODUCT)) {
 		@Override
@@ -56,6 +61,11 @@ public enum RequirementStatus {
 		@Override
 		public RequirementStatus rejected() {
 			return REQUIREMENT_ANALYSIS;
+		}
+
+		@Override
+		public boolean waitingForAllApprovals() {
+			return true;
 		}
 	},
 	DESIGNING("设计中", ImmutableSet.of(ARCHITECTURE)) {
@@ -168,5 +178,13 @@ public enum RequirementStatus {
 	 */
 	public RequirementStatus canceled() {
 		return CANCELED;
+	}
+
+	/**
+	 * 是否应等待所有负责人完成
+	 * @return true 表示等待所有负责人完成，false 则任意一位完成即可
+	 */
+	public boolean waitingForAllApprovals() {
+		return false;
 	}
 }
