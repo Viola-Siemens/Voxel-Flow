@@ -56,7 +56,7 @@ public class UserRequirementRelation {
 	private String oldStatus;
 
 	/**
-	 * 需求新状态
+	 * 需求新状态，未审批则为空
 	 * @see org.ecnumc.voxelflow.enumeration.RequirementStatus
 	 */
 	private String newStatus;

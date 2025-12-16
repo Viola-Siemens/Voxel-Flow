@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * 需求查询 Repository
@@ -52,5 +53,29 @@ public class RequirementQueryRepository {
 	@Nullable
 	public Requirement getRequirementByCode(String code) {
 		return this.requirementMapper.selectOne(new QueryWrapper<Requirement>().eq("code", code));
+	}
+
+	/**
+	 * 查询所有待处理的用户需求关系
+	 * @param code		需求编码
+	 * @param oldStatus	状态
+	 */
+	public List<UserRequirementRelation> getPendingRelationList(String code, RequirementStatus oldStatus) {
+		return this.userRequirementRelationMapper.selectList(new QueryWrapper<>(UserRequirementRelation.class)
+				.eq("code", code)
+				.eq("old_status", oldStatus.name())
+				.eq("relation_type", RelationType.HANDLING.name()));
+	}
+
+	/**
+	 * 查询待处理的用户需求关系数量
+	 * @param code		需求编码
+	 * @param oldStatus	状态
+	 */
+	public int getPendingRelationCount(String code, RequirementStatus oldStatus) {
+		return this.userRequirementRelationMapper.selectCount(new QueryWrapper<>(UserRequirementRelation.class)
+				.eq("code", code)
+				.eq("old_status", oldStatus.name())
+				.eq("relation_type", RelationType.HANDLING.name())).intValue();
 	}
 }

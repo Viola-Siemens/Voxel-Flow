@@ -52,7 +52,7 @@ public enum RequirementStatus {
 			return REJECTED;
 		}
 	},
-	REQUIREMENT_REVIEWING("需求评审中", ImmutableSet.of(DEVELOPMENT, TEST, ART, MODEL, BUILDING)) {
+	REQUIREMENT_REVIEWING("需求评审中", ImmutableSet.of(DEVELOPMENT, ARCHITECTURE, TEST, ART, MODEL, BUILDING)) {
 		@Override
 		public RequirementStatus approved() {
 			return DESIGNING;

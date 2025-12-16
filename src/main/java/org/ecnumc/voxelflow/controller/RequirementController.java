@@ -2,6 +2,8 @@ package org.ecnumc.voxelflow.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ecnumc.voxelflow.enumeration.ClientErrorCode;
+import org.ecnumc.voxelflow.req.RequirementAssignReq;
+import org.ecnumc.voxelflow.req.RequirementCommandReq;
 import org.ecnumc.voxelflow.req.RequirementCreateReq;
 import org.ecnumc.voxelflow.req.RequirementUpdateReq;
 import org.ecnumc.voxelflow.resp.BaseResp;
@@ -53,8 +55,8 @@ public class RequirementController {
 
 	/**
 	 * 更新需求
-	 * @param req 更新需求请求
-	 * @param request HTTP 请求
+	 * @param req		更新需求请求
+	 * @param request	HTTP 请求
 	 * @return 需求响应
 	 */
 	@PostMapping("/update")
@@ -73,7 +75,7 @@ public class RequirementController {
 
 	/**
 	 * 查询需求
-	 * @param code 需求编码
+	 * @param code	需求编码
 	 * @return 需求响应
 	 */
 	@GetMapping("/query")
@@ -84,5 +86,55 @@ public class RequirementController {
 			return BaseResp.error(ClientErrorCode.ERROR_1420);
 		}
 		return BaseResp.success(resp);
+	}
+
+	/**
+	 * 通过需求
+	 * @param req		需求操作请求
+	 * @param request	HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/approve")
+	public BaseResp<RequirementResp> approveRequirement(@Validated @RequestBody RequirementCommandReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.requirementService.approveRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
+		if(errorCode == null) {
+			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+		}
+		return BaseResp.error(errorCode);
+	}
+
+	/**
+	 * 拒绝需求
+	 * @param req		需求操作请求
+	 * @param request	HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/reject")
+	public BaseResp<RequirementResp> rejectRequirement(@Validated @RequestBody RequirementCommandReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.requirementService.rejectRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
+		if(errorCode == null) {
+			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+		}
+		return BaseResp.error(errorCode);
+	}
+
+	/**
+	 * 分配需求
+	 * @param req		需求分配请求
+	 * @param request	HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/assign")
+	public BaseResp<RequirementResp> assignRequirement(@Validated @RequestBody RequirementAssignReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.requirementService.assignRequirement(
+				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
+		);
+		if(errorCode == null) {
+			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+		}
+		return BaseResp.error(errorCode);
 	}
 }

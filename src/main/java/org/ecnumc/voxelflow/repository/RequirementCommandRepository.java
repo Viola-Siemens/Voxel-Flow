@@ -2,14 +2,19 @@ package org.ecnumc.voxelflow.repository;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.enumeration.RelationType;
 import org.ecnumc.voxelflow.enumeration.RequirementStatus;
 import org.ecnumc.voxelflow.mapper.RequirementMapper;
+import org.ecnumc.voxelflow.mapper.UserRequirementRelationMapper;
 import org.ecnumc.voxelflow.po.Requirement;
+import org.ecnumc.voxelflow.po.UserRequirementRelation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nullable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 需求命令 Repository
@@ -20,6 +25,9 @@ import java.util.Date;
 public class RequirementCommandRepository {
 	@Autowired
 	private RequirementMapper requirementMapper;
+
+	@Autowired
+	private UserRequirementRelationMapper userRequirementRelationMapper;
 
 	@Autowired
 	private CounterRepository counterRepository;
@@ -66,13 +74,136 @@ public class RequirementCommandRepository {
 								  @Nullable Integer priority, @Nullable String requirementType, String updatedBy) {
 		UpdateWrapper<Requirement> updateWrapper = new UpdateWrapper<Requirement>()
 				.eq("code", code)
-				.set("title", title)
-				.set("description", description)
-				.set("priority", priority)
-				.set("requirement_type", requirementType)
-				.set("updated_by", updatedBy)
-				.set("updated_at", new Date());
+				.set("updated_by", updatedBy);
+		if (title != null) {
+			updateWrapper.set("title", title);
+		}
+		if (description != null) {
+			updateWrapper.set("description", description);
+		}
+		if (priority != null) {
+			updateWrapper.set("priority", priority);
+		}
+		if (requirementType != null) {
+			updateWrapper.set("requirement_type", requirementType);
+		}
 
 		this.requirementMapper.update(updateWrapper);
+	}
+
+	/**
+	 * 更新关系
+	 * @param code			需求编码
+	 * @param oldStatus		旧的状态
+	 * @param description	修改描述，如同意/拒绝理由
+	 * @param relationType	修改类型
+	 * @param updatedBy		更新人
+	 */
+	public void updateRelation(String code, RequirementStatus oldStatus, String description, RelationType relationType, String updatedBy) {
+		UpdateWrapper<UserRequirementRelation> updateWrapper = new UpdateWrapper<UserRequirementRelation>()
+				.eq("code", code)
+				.eq("uid", updatedBy)
+				.eq("old_status", oldStatus.name())
+				.eq("relation_type", RelationType.HANDLING.name())
+				.set("updated_by", updatedBy)
+				.set("relation_type", relationType.name())
+				.set("description", description);
+		this.userRequirementRelationMapper.update(updateWrapper);
+	}
+
+	/**
+	 * 跳过剩余的修改关系
+	 * @param code		需求编码
+	 * @param oldStatus	旧的状态
+	 * @param updatedBy	更新人
+	 */
+	public void skipRemainingRelations(String code, RequirementStatus oldStatus, String updatedBy) {
+		UpdateWrapper<UserRequirementRelation> updateWrapper = new UpdateWrapper<UserRequirementRelation>()
+				.eq("code", code)
+				.eq("old_status", oldStatus.name())
+				.eq("relation_type", RelationType.HANDLING.name())
+				.set("relation_type", RelationType.IGNORED.name())
+				.set("updated_by", updatedBy);
+		this.userRequirementRelationMapper.update(updateWrapper);
+	}
+
+	/**
+	 * 更新需求状态
+	 * @param code			需求编码
+	 * @param oldStatus		旧的状态
+	 * @param status		新的状态
+	 * @param updatedBy		更新人
+	 */
+	public void updateStatus(String code, RequirementStatus oldStatus, RequirementStatus status, String updatedBy) {
+		UpdateWrapper<Requirement> updateWrapper = new UpdateWrapper<Requirement>()
+				.eq("code", code)
+				.set("updated_by", updatedBy);
+		if(!status.equals(oldStatus)) {
+			updateWrapper.set("status", status.name());
+		}
+		this.requirementMapper.update(updateWrapper);
+	}
+
+	/**
+	 * 委派下一位责任人处理
+	 * @param code			需求编码
+	 * @param status		新的状态
+	 * @param operator		下一位责任人
+	 * @param updatedBy		更新人
+	 */
+	public void assignOperator(String code, RequirementStatus status, String operator, String updatedBy) {
+		UserRequirementRelation rel = new UserRequirementRelation();
+		rel.setCode(code);
+		rel.setUid(operator);
+		rel.setRelationType(RelationType.HANDLING.name());
+		rel.setOldStatus(status.name());
+		rel.setCreatedBy(updatedBy);
+		rel.setUpdatedBy(updatedBy);
+		this.userRequirementRelationMapper.insert(rel);
+	}
+
+	/**
+	 * 撤销下一位责任人委派
+	 * @param code			需求编码
+	 * @param status		新的状态
+	 * @param operator		下一位责任人
+	 * @param updatedBy		更新人
+	 */
+	public boolean unassignOperator(String code, RequirementStatus status, String operator, String updatedBy) {
+		UserRequirementRelation rel = new UserRequirementRelation();
+		rel.setCode(code);
+		rel.setUid(operator);
+		rel.setRelationType(RelationType.HANDLING.name());
+		rel.setOldStatus(status.name());
+		rel.setCreatedBy(updatedBy);
+		rel.setUpdatedBy(updatedBy);
+		return this.userRequirementRelationMapper.update(new UpdateWrapper<UserRequirementRelation>()
+				.eq("code", code)
+				.eq("uid", operator)
+				.eq("relation_type", RelationType.HANDLING.name())
+				.eq("old_status", status.name())
+				.eq("created_by", updatedBy)
+				.set("relation_type", RelationType.WITHDRAWN.name())) > 0L;
+	}
+
+	/**
+	 * 委派多位责任人处理
+	 * @param code			需求编码
+	 * @param status		新的状态
+	 * @param operators		责任人们
+	 * @param updatedBy		更新人
+	 */
+	@Transactional(rollbackFor = Exception.class)
+	public void assignOperators(String code, RequirementStatus status, List<String> operators, String updatedBy) {
+		operators.forEach(uid -> {
+			UserRequirementRelation rel = new UserRequirementRelation();
+			rel.setCode(code);
+			rel.setUid(uid);
+			rel.setRelationType(RelationType.HANDLING.name());
+			rel.setOldStatus(status.name());
+			rel.setCreatedBy(updatedBy);
+			rel.setUpdatedBy(updatedBy);
+			this.userRequirementRelationMapper.insert(rel);
+		});
 	}
 }
