@@ -3,6 +3,7 @@ package org.ecnumc.voxelflow.enumeration;
 import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.ecnumc.voxelflow.util.IOperableStatus;
 
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import static org.ecnumc.voxelflow.enumeration.UserRole.*;
  */
 @Getter
 @AllArgsConstructor
-public enum RequirementStatus {
+public enum RequirementStatus implements IOperableStatus {
 	REVIEWING("审核中", ImmutableSet.of(BUSINESS, DIAGNOSIS)) {
 		@Override
 		public RequirementStatus approved() {
