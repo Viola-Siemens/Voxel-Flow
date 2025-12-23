@@ -269,6 +269,7 @@ class RequirementServiceTest {
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
 		verify(this.userQueryRepository, times(1)).getUserRoles(TEST_UID);
 		verify(this.userQueryRepository, times(1)).getUserRoles(TEST_NEXT_OPERATOR);
+		verify(this.requirementCommandRepository, times(1)).updateStatus(TEST_CODE, RequirementStatus.REVIEWING, RequirementStatus.COUNTERSIGNING, TEST_UID);
 	}
 
 	/**

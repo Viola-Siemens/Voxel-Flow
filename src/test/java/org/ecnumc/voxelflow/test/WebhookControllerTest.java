@@ -1,11 +1,13 @@
 package org.ecnumc.voxelflow.test;
 
+import org.ecnumc.voxelflow.Application;
 import org.ecnumc.voxelflow.controller.WebhookController;
 import org.ecnumc.voxelflow.service.CommitCommandService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,6 +17,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
+@SpringBootTest(classes = Application.class)
 class WebhookControllerTest {
 	@Mock
 	private CommitCommandService commitCommandService;

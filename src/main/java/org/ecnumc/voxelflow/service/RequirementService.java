@@ -181,6 +181,7 @@ public class RequirementService {
 		this.requirementCommandRepository.updateRelation(code, currentStatus, description, RelationType.APPROVED, uid);
 		if(update) {
 			// 更新需求
+			this.requirementCommandRepository.updateStatus(code, currentStatus, nextStatus, uid);
 			this.requirementCommandRepository.assignOperators(code, nextStatus, nextOperators, uid);
 		}
 
@@ -280,6 +281,41 @@ public class RequirementService {
 
 		this.requirementCommandRepository.assignOperator(code, currentStatus, assignee, uid);
 		return null;
+	}
+
+	/**
+	 * 取消分配需求
+	 * @param code		需求编码
+	 * @param assignee	被取消分配者 UID
+	 * @param uid		更新人 UID
+	 * @return 错误码，null 表示成功
+	 */
+	@Nullable
+	public ClientErrorCode unassignRequirement(String code, String assignee, String uid) {
+		// 获取原有需求
+		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
+		if (existingRequirement == null) {
+			log.warn("Requirement not found: {}", code);
+			return ClientErrorCode.ERROR_1420;
+		}
+
+		// 检查需求状态是否允许修改
+		RequirementStatus currentStatus = RequirementStatus.valueOf(existingRequirement.getStatus());
+		if (!isModifiable(currentStatus)) {
+			log.warn("Requirement status does not allow modification: {}", currentStatus);
+			return ClientErrorCode.ERROR_1422;
+		}
+
+		// 获取用户角色
+		List<UserRole> userRoles = this.userQueryRepository.getUserRoles(uid);
+
+		// 检查用户是否有权限修改需求
+		if (!hasPermissionToModify(currentStatus, userRoles)) {
+			log.warn("User {} does not have permission to modify requirement in status {}", uid, currentStatus);
+			return ClientErrorCode.ERROR_1491;
+		}
+
+		return this.requirementCommandRepository.unassignOperator(code, currentStatus, assignee, uid) ? ClientErrorCode.ERROR_1492 : null;
 	}
 
 	/**

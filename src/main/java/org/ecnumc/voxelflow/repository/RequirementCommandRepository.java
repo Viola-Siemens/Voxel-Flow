@@ -170,20 +170,13 @@ public class RequirementCommandRepository {
 	 * @param updatedBy		更新人
 	 */
 	public boolean unassignOperator(String code, RequirementStatus status, String operator, String updatedBy) {
-		UserRequirementRelation rel = new UserRequirementRelation();
-		rel.setCode(code);
-		rel.setUid(operator);
-		rel.setRelationType(RelationType.HANDLING.name());
-		rel.setOldStatus(status.name());
-		rel.setCreatedBy(updatedBy);
-		rel.setUpdatedBy(updatedBy);
 		return this.userRequirementRelationMapper.update(new UpdateWrapper<UserRequirementRelation>()
 				.eq("code", code)
 				.eq("uid", operator)
 				.eq("relation_type", RelationType.HANDLING.name())
 				.eq("old_status", status.name())
-				.eq("created_by", updatedBy)
-				.set("relation_type", RelationType.WITHDRAWN.name())) > 0L;
+				.set("relation_type", RelationType.WITHDRAWN.name())
+				.set("updated_by", updatedBy)) > 0L;
 	}
 
 	/**

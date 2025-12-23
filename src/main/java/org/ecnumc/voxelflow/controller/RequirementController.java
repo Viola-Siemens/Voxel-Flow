@@ -137,4 +137,22 @@ public class RequirementController {
 		}
 		return BaseResp.error(errorCode);
 	}
+
+	/**
+	 * 取消需求分配
+	 * @param req		需求分配请求
+	 * @param request	HTTP 请求
+	 * @return 需求响应
+	 */
+	@PostMapping("/unassign")
+	public BaseResp<RequirementResp> unassignRequirement(@Validated @RequestBody RequirementAssignReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.requirementService.unassignRequirement(
+				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
+		);
+		if(errorCode == null) {
+			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+		}
+		return BaseResp.error(errorCode);
+	}
 }
