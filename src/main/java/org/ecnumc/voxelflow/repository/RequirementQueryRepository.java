@@ -56,6 +56,36 @@ public class RequirementQueryRepository {
 	}
 
 	/**
+	 * 根据标题获取需求
+	 * @param titles	标题关键词
+	 * @param pageNum	页码
+	 * @param pageSize	页大小
+	 * @return 符合要求的需求列表
+	 */
+	public List<Requirement> getRequirementListByTitle(List<String> titles, int pageNum, int pageSize) {
+		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>(Requirement.class);
+		if(!titles.isEmpty()) {
+			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+		}
+		return this.requirementMapper.selectList(queryWrapper
+				.orderByDesc("updated_at")
+				.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize)));
+	}
+
+	/**
+	 * 根据标题获取需求数量，用于分页
+	 * @param titles	标题关键词
+	 * @return 符合要求的需求数量
+	 */
+	public int getRequirementCountByTitle(List<String> titles) {
+		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>(Requirement.class);
+		if(!titles.isEmpty()) {
+			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+		}
+		return this.requirementMapper.selectCount(queryWrapper).intValue();
+	}
+
+	/**
 	 * 查询所有待处理的用户需求关系
 	 * @param code		需求编码
 	 * @param oldStatus	状态

@@ -6,15 +6,15 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * 需求操作请求
+ * 任务操作请求
  * @author liudongyu
  */
 @Data
-public class RequirementCommandReq {
+public class TaskCommandReq {
 	/**
-	 * 需求 code
+	 * 任务（需求/问题/故事）code
 	 */
-	@NotNull(message = "需求 code 不能为空")
+	@NotNull(message = "任务 code 不能为空")
 	private String code;
 
 	/**

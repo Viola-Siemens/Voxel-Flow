@@ -1,15 +1,24 @@
 package org.ecnumc.voxelflow.enumeration;
 
+import com.google.common.collect.ImmutableSet;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.ecnumc.voxelflow.util.IOperableStatus;
+
+import java.util.Set;
+
+import static org.ecnumc.voxelflow.enumeration.UserRole.*;
+import static org.ecnumc.voxelflow.enumeration.UserRole.ART;
+import static org.ecnumc.voxelflow.enumeration.UserRole.BUILDING;
+import static org.ecnumc.voxelflow.enumeration.UserRole.MODEL;
 
 /**
  * @author liudongyu
  */
 @Getter
 @AllArgsConstructor
-public enum StoryStatus {
-	DRAFT("草稿") {
+public enum StoryStatus implements IOperableStatus {
+	DRAFT("草稿", ImmutableSet.of(DEVELOPMENT, ARCHITECTURE, ART, MODEL, BUILDING)) {
 		@Override
 		public StoryStatus approved() {
 			return PROGRESSING;
@@ -20,7 +29,29 @@ public enum StoryStatus {
 			return REJECTED;
 		}
 	},
-	PROGRESSING("进行中") {
+	PROGRESSING("进行中", ImmutableSet.of(DEVELOPMENT, ART, MODEL, BUILDING)) {
+		@Override
+		public StoryStatus approved() {
+			return TESTING;
+		}
+
+		@Override
+		public StoryStatus rejected() {
+			return REJECTED;
+		}
+	},
+	TESTING("测试中", ImmutableSet.of(TEST)) {
+		@Override
+		public StoryStatus approved() {
+			return FINISHED;
+		}
+
+		@Override
+		public StoryStatus rejected() {
+			return PROGRESSING;
+		}
+	},
+	FINISHED("已完成", ImmutableSet.of()) {
 		@Override
 		public StoryStatus approved() {
 			return FINISHED;
@@ -31,18 +62,7 @@ public enum StoryStatus {
 			return REJECTED;
 		}
 	},
-	FINISHED("已完成") {
-		@Override
-		public StoryStatus approved() {
-			return FINISHED;
-		}
-
-		@Override
-		public StoryStatus rejected() {
-			return REJECTED;
-		}
-	},
-	REJECTED("已打回") {
+	REJECTED("已打回", ImmutableSet.of()) {
 		@Override
 		public StoryStatus approved() {
 			return REJECTED;
@@ -53,7 +73,7 @@ public enum StoryStatus {
 			return REJECTED;
 		}
 	},
-	CANCELED("已取消") {
+	CANCELED("已取消", ImmutableSet.of()) {
 		@Override
 		public StoryStatus approved() {
 			return CANCELED;
@@ -66,6 +86,7 @@ public enum StoryStatus {
 	};
 
 	private final String name;
+	private final Set<UserRole> operableRoles;
 
 	/**
 	 * 负责人完成该阶段

@@ -30,7 +30,7 @@ public class CommitQueryRepository {
 		return this.commitMapper.selectList(
 				new QueryWrapper<Commit>()
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 
@@ -54,7 +54,7 @@ public class CommitQueryRepository {
 				new QueryWrapper<Commit>()
 						.eq("code", code)
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 
@@ -84,7 +84,7 @@ public class CommitQueryRepository {
 						.eq("code", code)
 						.eq("commit_type", type)
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 
@@ -116,7 +116,7 @@ public class CommitQueryRepository {
 						.eq("code", code)
 						.eq("created_by", uid)
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 
@@ -150,7 +150,7 @@ public class CommitQueryRepository {
 						.eq("created_by", uid)
 						.eq("commit_type", type)
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 
@@ -182,7 +182,7 @@ public class CommitQueryRepository {
 				new QueryWrapper<Commit>()
 						.eq("created_by", uid)
 						.orderByDesc("updated_at")
-						.last("LIMIT " + pageSize + " OFFSET " + (pageNum * pageSize))
+						.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize))
 		);
 	}
 

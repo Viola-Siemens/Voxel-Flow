@@ -2,18 +2,22 @@ package org.ecnumc.voxelflow.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.ecnumc.voxelflow.enumeration.ClientErrorCode;
-import org.ecnumc.voxelflow.req.RequirementAssignReq;
-import org.ecnumc.voxelflow.req.RequirementCommandReq;
+import org.ecnumc.voxelflow.req.TaskAssignReq;
+import org.ecnumc.voxelflow.req.TaskCommandReq;
 import org.ecnumc.voxelflow.req.RequirementCreateReq;
 import org.ecnumc.voxelflow.req.RequirementUpdateReq;
 import org.ecnumc.voxelflow.resp.BaseResp;
+import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.RequirementResp;
 import org.ecnumc.voxelflow.service.RequirementService;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * 需求 Controller
@@ -68,7 +72,7 @@ public class RequirementController {
 			req.getPriority(), req.getRequirementType(), uid
 		);
 		if(errorCode == null) {
-			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
 	}
@@ -79,13 +83,25 @@ public class RequirementController {
 	 * @return 需求响应
 	 */
 	@GetMapping("/query")
-	public BaseResp<RequirementResp> queryRequirement(@Validated @RequestParam(value = "code") String code) {
-		RequirementResp resp = this.requirementService.queryRequirement(code);
+	public BaseResp<RequirementResp> queryRequirement(@RequestParam(value = "code") String code) {
+		RequirementResp resp = this.requirementService.queryByCode(code);
 		if (resp == null) {
 			log.warn("Requirement not found: {}", code);
 			return BaseResp.error(ClientErrorCode.ERROR_1420);
 		}
 		return BaseResp.success(resp);
+	}
+
+	/**
+	 * 查询需求
+	 * @param title	标题关键词
+	 * @return 需求响应
+	 */
+	@GetMapping("/query-title")
+	public BaseResp<PagedResp<RequirementResp>> queryRequirementByTitle(@Length(max = 1023) @RequestParam(value = "title") String title,
+																	   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+																	   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+		return BaseResp.success(this.requirementService.queryByTitle(title, pageNum, pageSize));
 	}
 
 	/**
@@ -95,11 +111,11 @@ public class RequirementController {
 	 * @return 需求响应
 	 */
 	@PostMapping("/approve")
-	public BaseResp<RequirementResp> approveRequirement(@Validated @RequestBody RequirementCommandReq req, HttpServletRequest request) {
+	public BaseResp<RequirementResp> approveRequirement(@Validated @RequestBody TaskCommandReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
 		ClientErrorCode errorCode = this.requirementService.approveRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
 		if(errorCode == null) {
-			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
 	}
@@ -111,11 +127,11 @@ public class RequirementController {
 	 * @return 需求响应
 	 */
 	@PostMapping("/reject")
-	public BaseResp<RequirementResp> rejectRequirement(@Validated @RequestBody RequirementCommandReq req, HttpServletRequest request) {
+	public BaseResp<RequirementResp> rejectRequirement(@Validated @RequestBody TaskCommandReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
 		ClientErrorCode errorCode = this.requirementService.rejectRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
 		if(errorCode == null) {
-			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
 	}
@@ -127,13 +143,13 @@ public class RequirementController {
 	 * @return 需求响应
 	 */
 	@PostMapping("/assign")
-	public BaseResp<RequirementResp> assignRequirement(@Validated @RequestBody RequirementAssignReq req, HttpServletRequest request) {
+	public BaseResp<RequirementResp> assignRequirement(@Validated @RequestBody TaskAssignReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
 		ClientErrorCode errorCode = this.requirementService.assignRequirement(
 				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
 		);
 		if(errorCode == null) {
-			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
 	}
@@ -145,13 +161,13 @@ public class RequirementController {
 	 * @return 需求响应
 	 */
 	@PostMapping("/unassign")
-	public BaseResp<RequirementResp> unassignRequirement(@Validated @RequestBody RequirementAssignReq req, HttpServletRequest request) {
+	public BaseResp<RequirementResp> unassignRequirement(@Validated @RequestBody TaskAssignReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
 		ClientErrorCode errorCode = this.requirementService.unassignRequirement(
 				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
 		);
 		if(errorCode == null) {
-			return BaseResp.success(this.requirementService.queryRequirement(req.getCode()));
+			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
 		return BaseResp.error(errorCode);
 	}

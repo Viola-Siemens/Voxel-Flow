@@ -136,7 +136,7 @@ class RequirementServiceTest {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(requirement);
 		when(this.requirementConverter.convertToResp(requirement)).thenReturn(requirementResp);
 
-		RequirementResp result = this.requirementService.queryRequirement(TEST_CODE);
+		RequirementResp result = this.requirementService.queryByCode(TEST_CODE);
 
 		assertNotNull(result);
 		assertEquals(TEST_CODE, result.getCode());
@@ -151,7 +151,7 @@ class RequirementServiceTest {
 	void testQueryRequirementFailNotFound() {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(null);
 
-		RequirementResp result = this.requirementService.queryRequirement(TEST_CODE);
+		RequirementResp result = this.requirementService.queryByCode(TEST_CODE);
 
 		assertNull(result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);

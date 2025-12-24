@@ -6,15 +6,15 @@ import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
 /**
- * 需求分配请求
+ * 任务分配请求
  * @author liudongyu
  */
 @Data
-public class RequirementAssignReq {
+public class TaskAssignReq {
 	/**
-	 * 需求 code
+	 * 任务（需求/问题/故事）code
 	 */
-	@NotNull(message = "需求 code 不能为空")
+	@NotNull(message = "任务 code 不能为空")
 	private String code;
 
 	/**

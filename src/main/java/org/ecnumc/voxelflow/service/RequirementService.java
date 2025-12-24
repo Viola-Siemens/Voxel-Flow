@@ -7,6 +7,7 @@ import org.ecnumc.voxelflow.po.Requirement;
 import org.ecnumc.voxelflow.repository.RequirementCommandRepository;
 import org.ecnumc.voxelflow.repository.RequirementQueryRepository;
 import org.ecnumc.voxelflow.repository.UserQueryRepository;
+import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.RequirementResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.ecnumc.voxelflow.util.IOperableStatus.hasPermissionToModify;
 
@@ -23,7 +25,7 @@ import static org.ecnumc.voxelflow.util.IOperableStatus.hasPermissionToModify;
  */
 @Service
 @Slf4j
-public class RequirementService {
+public class RequirementService implements Queryable<RequirementResp>, Approvable, Assignable {
 	@Autowired
 	private RequirementCommandRepository requirementCommandRepository;
 
@@ -63,11 +65,11 @@ public class RequirementService {
 
 	/**
 	 * 查询需求
-	 * @param code 需求编码
+	 * @param code	需求编码
 	 * @return 需求响应
 	 */
-	@Nullable
-	public RequirementResp queryRequirement(String code) {
+	@Override @Nullable
+	public RequirementResp queryByCode(String code) {
 		Requirement requirement = this.requirementQueryRepository.getRequirementByCode(code);
 		if (requirement == null) {
 			log.warn("Requirement not found: {}", code);
@@ -75,6 +77,26 @@ public class RequirementService {
 		}
 
 		return this.requirementConverter.convertToResp(requirement);
+	}
+
+	/**
+	 * 通过标题查询需求
+	 * @param title	需求标题
+	 * @return 需求响应
+	 */
+	@Override
+	public PagedResp<RequirementResp> queryByTitle(String title, int pageNum, int pageSize) {
+		List<String> titles = Arrays.asList(title.split(" "));
+		List<RequirementResp> requirements = this.requirementQueryRepository
+				.getRequirementListByTitle(titles, pageNum, pageSize)
+				.stream()
+				.map(this.requirementConverter::convertToResp)
+				.collect(Collectors.toList());
+		int total = this.requirementQueryRepository.getRequirementCountByTitle(titles);
+		return PagedResp.<RequirementResp>builder()
+				.pageNum(pageNum).pageSize(pageSize).total(total)
+				.list(requirements)
+				.build();
 	}
 
 	/**
@@ -135,7 +157,7 @@ public class RequirementService {
 	 * @param uid			更新人 UID
 	 * @return 错误码，null 表示成功
 	 */
-	@Nullable
+	@Override @Nullable
 	public ClientErrorCode approveRequirement(String code, List<String> nextOperators, String description, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
@@ -198,7 +220,7 @@ public class RequirementService {
 	 * @param uid			更新人 UID
 	 * @return 错误码，null 表示成功
 	 */
-	@Nullable
+	@Override @Nullable
 	public ClientErrorCode rejectRequirement(String code, List<String> nextOperators, String description, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
@@ -247,7 +269,7 @@ public class RequirementService {
 	 * @param uid		更新人 UID
 	 * @return 错误码，null 表示成功
 	 */
-	@Nullable
+	@Override @Nullable
 	public ClientErrorCode assignRequirement(String code, String assignee, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
@@ -292,7 +314,7 @@ public class RequirementService {
 	 * @param uid		更新人 UID
 	 * @return 错误码，null 表示成功
 	 */
-	@Nullable
+	@Override @Nullable
 	public ClientErrorCode unassignRequirement(String code, String assignee, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
@@ -336,6 +358,7 @@ public class RequirementService {
 	 * @param status	需求状态
 	 * @return 是否允许修改（是否是终态）
 	 */
+	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	private static boolean isModifiable(RequirementStatus status) {
 		// 已发布、已打回、已取消的需求不允许修改
 		return status != RequirementStatus.RELEASED &&
