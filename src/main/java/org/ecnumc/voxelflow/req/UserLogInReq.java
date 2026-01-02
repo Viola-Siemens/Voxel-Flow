@@ -5,6 +5,7 @@ import lombok.Data;
 
 /**
  * 用户登录请求
+ * @author liudongyu
  */
 @Data
 @Builder

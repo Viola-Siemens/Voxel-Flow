@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * 复盘状态
  * @author liudongyu
  */
 @Getter

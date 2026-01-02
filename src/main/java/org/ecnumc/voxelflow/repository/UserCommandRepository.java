@@ -1,6 +1,8 @@
 package org.ecnumc.voxelflow.repository;
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.enumeration.UserStatus;
 import org.ecnumc.voxelflow.mapper.UserMapper;
 import org.ecnumc.voxelflow.po.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +33,14 @@ public class UserCommandRepository {
 		user.setPassword(password);
 		user.setEmail(email);
 		this.userMapper.insert(user);
+	}
+
+	/**
+	 * 修改用户状态
+	 * @param toOpt	被修改用户 ID
+	 * @param uid	操作用户 ID
+	 */
+	public boolean changeStatus(String toOpt, UserStatus status, String uid) {
+		return this.userMapper.update(new UpdateWrapper<User>().eq("uid", toOpt).set("user_status", status.toString()).set("updated_by", uid)) > 0L;
 	}
 }

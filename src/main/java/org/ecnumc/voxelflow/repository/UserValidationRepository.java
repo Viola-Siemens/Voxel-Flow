@@ -33,6 +33,15 @@ public class UserValidationRepository {
 	 * @param token	用户 TOKEN
 	 */
 	public void setToken(String uid, String token) {
+		// TOKEN 半天过期
 		this.redisRepository.set(uid, token, 43200L);
+	}
+
+	/**
+	 * 删除用户 TOKEN
+	 * @param uid	用户 UID
+	 */
+	public void deleteToken(String uid) {
+		this.redisRepository.delete(uid);
 	}
 }

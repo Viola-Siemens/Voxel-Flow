@@ -13,6 +13,7 @@ import static org.ecnumc.voxelflow.enumeration.UserRole.BUILDING;
 import static org.ecnumc.voxelflow.enumeration.UserRole.MODEL;
 
 /**
+ * 故事状态
  * @author liudongyu
  */
 @Getter
