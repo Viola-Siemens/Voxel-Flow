@@ -15,4 +15,4 @@ CREATE TABLE `user_requirement_rel` (
     PRIMARY KEY (`id`),
     KEY `idx_code_uid` (`code`, `uid`) USING BTREE,
     KEY `idx_updated_at` (`updated_at`) USING BTREE
- )
+) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='需求修改记录';
