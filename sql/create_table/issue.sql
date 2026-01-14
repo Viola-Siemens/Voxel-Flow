@@ -4,7 +4,7 @@ CREATE TABLE `issue` (
     `id` bigint(20) unsigned NOT NULL auto_increment COMMENT '自增主键',
     `code` varchar(45) NOT NULL COMMENT '问题编号',
     `title` varchar(250) NOT NULL COMMENT '问题标题',
-    `description` TEXT NOT NULL DEFAULT '' COMMENT '问题描述',
+    `description` TEXT NOT NULL COMMENT '问题描述',
     `status` varchar(45) NOT NULL DEFAULT 'REVIEWING' COMMENT '问题状态',
     `priority` tinyint(2) NOT NULL DEFAULT 2 COMMENT '问题优先级',
     `created_by` varchar(45) NOT NULL DEFAULT 'SYSTEM' COMMENT '创建人',

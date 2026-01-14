@@ -4,7 +4,7 @@ CREATE TABLE `requirement` (
     `id` bigint(20) unsigned NOT NULL auto_increment COMMENT '自增主键',
     `code` varchar(45) NOT NULL COMMENT '需求编号',
     `title` varchar(250) NOT NULL COMMENT '需求标题',
-    `description` TEXT NOT NULL DEFAULT '' COMMENT '需求描述',
+    `description` TEXT NOT NULL COMMENT '需求描述',
     `status` varchar(45) NOT NULL DEFAULT 'REVIEWING' COMMENT '需求状态',
     `priority` tinyint(2) NOT NULL DEFAULT 2 COMMENT '需求优先级',
     `requirement_type` varchar(45) NOT NULL COMMENT '需求类型',

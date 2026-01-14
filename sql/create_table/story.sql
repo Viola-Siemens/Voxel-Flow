@@ -5,7 +5,7 @@ CREATE TABLE `story` (
     `code` varchar(45) NOT NULL COMMENT '故事编号',
     `req_code` varchar(45) NOT NULL COMMENT '对应的需求编号',
     `title` varchar(250) NOT NULL COMMENT '故事标题',
-    `description` TEXT NOT NULL DEFAULT '' COMMENT '故事描述',
+    `description` TEXT NOT NULL COMMENT '故事描述',
     `status` varchar(45) NOT NULL DEFAULT 'DRAFT' COMMENT '故事状态',
     `priority` tinyint(2) NOT NULL DEFAULT 2 COMMENT '故事优先级',
     `created_by` varchar(45) NOT NULL DEFAULT 'SYSTEM' COMMENT '创建人',
