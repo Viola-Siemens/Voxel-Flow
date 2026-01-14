@@ -2,7 +2,9 @@ package org.ecnumc.voxelflow.po;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.annotation.Nonnull;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,13 +13,13 @@ import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
- * 问题修改记录
+ * 部门/小组
  * @author liudongyu
  */
 @Data
-@Table(name = "user_issue_rel")
-@TableName(value = "user_issue_rel")
-public class UserIssueRelation {
+@Table(name = "group")
+@TableName(value = "group")
+public class Group {
 	/**
 	 * 自增主键
 	 */
@@ -26,40 +28,23 @@ public class UserIssueRelation {
 	private Long id;
 
 	/**
-	 * 问题编号
-	 * @see Issue#getCode
+	 * 编码
 	 */
-	@Pattern(regexp = "^BUG-\\d+$")
+	@Nonnull
+	@Pattern(regexp = "^[A-Z][A-Z0-9]+$")
 	private String code;
 
 	/**
-	 * 用户 UUID
+	 * 名称
+	 */
+	@Length(min = 2, max = 32)
+	private String name;
+
+	/**
+	 * 主管/组长 uid
 	 * @see User#getUid
 	 */
-	private String uid;
-
-	/**
-	 * 修改描述，如同意/拒绝理由
-	 */
-	private String description;
-
-	/**
-	 * 关系类型
-	 * @see org.ecnumc.voxelflow.enumeration.RelationType
-	 */
-	private String relationType;
-
-	/**
-	 * 问题旧状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
-	 */
-	private String oldStatus;
-
-	/**
-	 * 问题新状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
-	 */
-	private String newStatus;
+	private String leader;
 
 	/**
 	 * 创建人

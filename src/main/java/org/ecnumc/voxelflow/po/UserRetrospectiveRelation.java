@@ -11,13 +11,13 @@ import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
- * 问题修改记录
+ * 复盘单修改记录
  * @author liudongyu
  */
 @Data
-@Table(name = "user_issue_rel")
-@TableName(value = "user_issue_rel")
-public class UserIssueRelation {
+@Table(name = "user_retrospective_rel")
+@TableName(value = "user_retrospective_rel")
+public class UserRetrospectiveRelation {
 	/**
 	 * 自增主键
 	 */
@@ -26,10 +26,10 @@ public class UserIssueRelation {
 	private Long id;
 
 	/**
-	 * 问题编号
-	 * @see Issue#getCode
+	 * 复盘单编号
+	 * @see Retrospective#getCode
 	 */
-	@Pattern(regexp = "^BUG-\\d+$")
+	@Pattern(regexp = "^RTS-\\d+$")
 	private String code;
 
 	/**
@@ -50,14 +50,14 @@ public class UserIssueRelation {
 	private String relationType;
 
 	/**
-	 * 问题旧状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
+	 * 复盘单旧状态
+	 * @see org.ecnumc.voxelflow.enumeration.RetrospectiveStatus
 	 */
 	private String oldStatus;
 
 	/**
-	 * 问题新状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
+	 * 复盘单新状态
+	 * @see org.ecnumc.voxelflow.enumeration.RetrospectiveStatus
 	 */
 	private String newStatus;
 

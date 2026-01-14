@@ -263,7 +263,7 @@ class RequirementServiceTest {
 		when(this.userQueryRepository.getUserRoles(TEST_NEXT_OPERATOR)).thenReturn(nextOperatorRoles);
 		when(this.requirementQueryRepository.getPendingRelationCount(TEST_CODE, RequirementStatus.REVIEWING)).thenReturn(0);
 
-		ClientErrorCode result = this.requirementService.approveRequirement(TEST_CODE, nextOperators, "Approved", TEST_UID);
+		ClientErrorCode result = this.requirementService.approve(TEST_CODE, nextOperators, "Approved", TEST_UID);
 
 		assertNull(result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -280,7 +280,7 @@ class RequirementServiceTest {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(null);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.approveRequirement(TEST_CODE, nextOperators, "Approved", TEST_UID);
+		ClientErrorCode result = this.requirementService.approve(TEST_CODE, nextOperators, "Approved", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1420, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -297,7 +297,7 @@ class RequirementServiceTest {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(requirement);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.approveRequirement(TEST_CODE, nextOperators, "Approved", TEST_UID);
+		ClientErrorCode result = this.requirementService.approve(TEST_CODE, nextOperators, "Approved", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1422, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -316,7 +316,7 @@ class RequirementServiceTest {
 		when(this.userQueryRepository.getUserRoles(TEST_UID)).thenReturn(userRoles);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.approveRequirement(TEST_CODE, nextOperators, "Approved", TEST_UID);
+		ClientErrorCode result = this.requirementService.approve(TEST_CODE, nextOperators, "Approved", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1491, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -338,7 +338,7 @@ class RequirementServiceTest {
 		when(this.userQueryRepository.getUserRoles(TEST_UID)).thenReturn(userRoles);
 		when(this.userQueryRepository.getUserRoles(TEST_NEXT_OPERATOR)).thenReturn(nextOperatorRoles);
 
-		ClientErrorCode result = this.requirementService.approveRequirement(TEST_CODE, nextOperators, "Approved", TEST_UID);
+		ClientErrorCode result = this.requirementService.approve(TEST_CODE, nextOperators, "Approved", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1492, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -362,7 +362,7 @@ class RequirementServiceTest {
 		when(this.userQueryRepository.getUserRoles(TEST_UID)).thenReturn(userRoles);
 		when(this.userQueryRepository.getUserRoles(TEST_NEXT_OPERATOR)).thenReturn(nextOperatorRoles);
 
-		ClientErrorCode result = this.requirementService.rejectRequirement(TEST_CODE, nextOperators, "Rejected", TEST_UID);
+		ClientErrorCode result = this.requirementService.reject(TEST_CODE, nextOperators, "Rejected", TEST_UID);
 
 		assertNull(result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -378,7 +378,7 @@ class RequirementServiceTest {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(null);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.rejectRequirement(TEST_CODE, nextOperators, "Rejected", TEST_UID);
+		ClientErrorCode result = this.requirementService.reject(TEST_CODE, nextOperators, "Rejected", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1420, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -395,7 +395,7 @@ class RequirementServiceTest {
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(requirement);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.rejectRequirement(TEST_CODE, nextOperators, "Rejected", TEST_UID);
+		ClientErrorCode result = this.requirementService.reject(TEST_CODE, nextOperators, "Rejected", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1422, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -408,13 +408,13 @@ class RequirementServiceTest {
 	@Test
 	void testRejectRequirementFailNoPermission() {
 		Requirement requirement = this.createTestRequirement();
-		List<UserRole> userRoles = Collections.singletonList(UserRole.DEVELOPMENT);
+		List<UserRole> userRoles = Collections.singletonList(UserRole.DEVELOPMENT);	// 开发人员无权操作审核中的需求
 
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(requirement);
 		when(this.userQueryRepository.getUserRoles(TEST_UID)).thenReturn(userRoles);
 
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
-		ClientErrorCode result = this.requirementService.rejectRequirement(TEST_CODE, nextOperators, "Rejected", TEST_UID);
+		ClientErrorCode result = this.requirementService.reject(TEST_CODE, nextOperators, "Rejected", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1491, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);
@@ -428,16 +428,16 @@ class RequirementServiceTest {
 	@Test
 	void testRejectRequirementFailNextOperatorNoPermission() {
 		Requirement requirement = this.createTestRequirement();
-		requirement.setStatus(RequirementStatus.TESTING.name());
+		requirement.setStatus(RequirementStatus.TESTING.name());	// 下一个状态是验收中
 		List<UserRole> userRoles = Collections.singletonList(UserRole.TEST);
-		List<UserRole> nextOperatorRoles = Arrays.asList(UserRole.PRODUCT, UserRole.SECURITY);
+		List<UserRole> nextOperatorRoles = Arrays.asList(UserRole.PRODUCT, UserRole.SECURITY);	// 无权验收
 		List<String> nextOperators = Collections.singletonList(TEST_NEXT_OPERATOR);
 
 		when(this.requirementQueryRepository.getRequirementByCode(TEST_CODE)).thenReturn(requirement);
 		when(this.userQueryRepository.getUserRoles(TEST_UID)).thenReturn(userRoles);
 		when(this.userQueryRepository.getUserRoles(TEST_NEXT_OPERATOR)).thenReturn(nextOperatorRoles);
 
-		ClientErrorCode result = this.requirementService.rejectRequirement(TEST_CODE, nextOperators, "Rejected", TEST_UID);
+		ClientErrorCode result = this.requirementService.reject(TEST_CODE, nextOperators, "Rejected", TEST_UID);
 
 		assertEquals(ClientErrorCode.ERROR_1492, result);
 		verify(this.requirementQueryRepository, times(1)).getRequirementByCode(TEST_CODE);

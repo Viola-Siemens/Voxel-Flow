@@ -3,8 +3,8 @@ DROP TABLE IF EXISTS `requirement`;
 CREATE TABLE `requirement` (
     `id` bigint(20) unsigned NOT NULL auto_increment COMMENT '自增主键',
     `code` varchar(45) NOT NULL COMMENT '需求编号',
-    `title` varchar(45) NOT NULL COMMENT '需求标题',
-    `description` varchar(45) NOT NULL DEFAULT '' COMMENT '需求描述',
+    `title` varchar(250) NOT NULL COMMENT '需求标题',
+    `description` TEXT NOT NULL DEFAULT '' COMMENT '需求描述',
     `status` varchar(45) NOT NULL DEFAULT 'REVIEWING' COMMENT '需求状态',
     `priority` tinyint(2) NOT NULL DEFAULT 2 COMMENT '需求优先级',
     `requirement_type` varchar(45) NOT NULL COMMENT '需求类型',
@@ -18,4 +18,4 @@ CREATE TABLE `requirement` (
 ) ENGINE=InnoDB CHARSET=utf8mb4 COMMENT='需求表';
 
 INSERT INTO `requirement` (`code`, `title`, `description`, `status`, `priority`, `requirement_type`) VALUES
-('REQ-1', '【VoxelFlow】项目管理平台搭建需求', '需求描述 1', '待确认', 0, 'EFFICIENCY');
+('REQ-1', '【VoxelFlow】项目管理平台搭建需求', '建立 VoxelFlow 项目管理平台，提高 ECNUMC 社团生产效率', 'REVIEWING', 0, 'EFFICIENCY');

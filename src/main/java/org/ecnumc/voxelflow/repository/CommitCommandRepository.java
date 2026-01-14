@@ -27,14 +27,18 @@ public class CommitCommandRepository {
 	 */
 	public void add(String commitId, String repoUrl, String type, String code, String message,
 					@Nullable String commitUrl, String uid) {
-		Commit commit = new Commit();
-		commit.setCommitId(commitId);
-		commit.setRepoUrl(repoUrl);
-		commit.setCommitType(type);
-		commit.setCode(code);
-		commit.setMessage(message);
-		commit.setCommitUrl(commitUrl);
-		commit.setCreatedBy(uid);
-		this.commitMapper.insert(commit);
+		try {
+			Commit commit = new Commit();
+			commit.setCommitId(commitId);
+			commit.setRepoUrl(repoUrl);
+			commit.setCommitType(type);
+			commit.setCode(code);
+			commit.setMessage(message);
+			commit.setCommitUrl(commitUrl);
+			commit.setCreatedBy(uid);
+			this.commitMapper.insert(commit);
+		} catch (Exception e) {
+			log.error("添加提交记录失败", e);
+		}
 	}
 }

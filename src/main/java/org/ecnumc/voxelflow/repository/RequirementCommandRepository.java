@@ -22,7 +22,7 @@ import java.util.List;
  */
 @Repository
 @Slf4j
-public class RequirementCommandRepository {
+public class RequirementCommandRepository implements OperatingRelationAssignable<RequirementStatus> {
 	@Autowired
 	private RequirementMapper requirementMapper;
 
@@ -99,6 +99,7 @@ public class RequirementCommandRepository {
 	 * @param relationType	修改类型
 	 * @param updatedBy		更新人
 	 */
+	@Override
 	public void updateRelation(String code, RequirementStatus oldStatus, String description, RelationType relationType, String updatedBy) {
 		UpdateWrapper<UserRequirementRelation> updateWrapper = new UpdateWrapper<UserRequirementRelation>()
 				.eq("code", code)
@@ -117,6 +118,7 @@ public class RequirementCommandRepository {
 	 * @param oldStatus	旧的状态
 	 * @param updatedBy	更新人
 	 */
+	@Override
 	public void skipRemainingRelations(String code, RequirementStatus oldStatus, String updatedBy) {
 		UpdateWrapper<UserRequirementRelation> updateWrapper = new UpdateWrapper<UserRequirementRelation>()
 				.eq("code", code)
@@ -137,6 +139,7 @@ public class RequirementCommandRepository {
 	public void updateStatus(String code, RequirementStatus oldStatus, RequirementStatus status, String updatedBy) {
 		UpdateWrapper<Requirement> updateWrapper = new UpdateWrapper<Requirement>()
 				.eq("code", code)
+				.eq("status", oldStatus.name())
 				.set("updated_by", updatedBy);
 		if(!status.equals(oldStatus)) {
 			updateWrapper.set("status", status.name());
@@ -151,6 +154,7 @@ public class RequirementCommandRepository {
 	 * @param operator		下一位责任人
 	 * @param updatedBy		更新人
 	 */
+	@Override
 	public void assignOperator(String code, RequirementStatus status, String operator, String updatedBy) {
 		UserRequirementRelation rel = new UserRequirementRelation();
 		rel.setCode(code);
@@ -169,6 +173,7 @@ public class RequirementCommandRepository {
 	 * @param operator		下一位责任人
 	 * @param updatedBy		更新人
 	 */
+	@Override
 	public boolean unassignOperator(String code, RequirementStatus status, String operator, String updatedBy) {
 		return this.userRequirementRelationMapper.update(new UpdateWrapper<UserRequirementRelation>()
 				.eq("code", code)
@@ -186,6 +191,7 @@ public class RequirementCommandRepository {
 	 * @param operators		责任人们
 	 * @param updatedBy		更新人
 	 */
+	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void assignOperators(String code, RequirementStatus status, List<String> operators, String updatedBy) {
 		operators.forEach(uid -> {

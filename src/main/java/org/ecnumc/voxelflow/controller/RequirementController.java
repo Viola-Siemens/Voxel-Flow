@@ -113,7 +113,7 @@ public class RequirementController {
 	@PostMapping("/approve")
 	public BaseResp<RequirementResp> approveRequirement(@Validated @RequestBody TaskCommandReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
-		ClientErrorCode errorCode = this.requirementService.approveRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
+		ClientErrorCode errorCode = this.requirementService.approve(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
 		if(errorCode == null) {
 			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
@@ -129,7 +129,7 @@ public class RequirementController {
 	@PostMapping("/reject")
 	public BaseResp<RequirementResp> rejectRequirement(@Validated @RequestBody TaskCommandReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
-		ClientErrorCode errorCode = this.requirementService.rejectRequirement(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
+		ClientErrorCode errorCode = this.requirementService.reject(req.getCode(), req.getNextOperators(), req.getDescription(), uid);
 		if(errorCode == null) {
 			return BaseResp.success(this.requirementService.queryByCode(req.getCode()));
 		}
@@ -145,7 +145,7 @@ public class RequirementController {
 	@PostMapping("/assign")
 	public BaseResp<RequirementResp> assignRequirement(@Validated @RequestBody TaskAssignReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
-		ClientErrorCode errorCode = this.requirementService.assignRequirement(
+		ClientErrorCode errorCode = this.requirementService.assign(
 				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
 		);
 		if(errorCode == null) {
@@ -163,7 +163,7 @@ public class RequirementController {
 	@PostMapping("/unassign")
 	public BaseResp<RequirementResp> unassignRequirement(@Validated @RequestBody TaskAssignReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
-		ClientErrorCode errorCode = this.requirementService.unassignRequirement(
+		ClientErrorCode errorCode = this.requirementService.unassign(
 				req.getCode(), req.getAssignee() == null ? uid : req.getAssignee(), uid
 		);
 		if(errorCode == null) {

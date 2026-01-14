@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Repository
 @Slf4j
-public class RequirementQueryRepository {
+public class RequirementQueryRepository implements PendingRelationQueryable<UserRequirementRelation, RequirementStatus> {
 	@Autowired
 	private RequirementMapper requirementMapper;
 
@@ -90,6 +90,7 @@ public class RequirementQueryRepository {
 	 * @param code		需求编码
 	 * @param oldStatus	状态
 	 */
+	@Override
 	public List<UserRequirementRelation> getPendingRelationList(String code, RequirementStatus oldStatus) {
 		return this.userRequirementRelationMapper.selectList(new QueryWrapper<>(UserRequirementRelation.class)
 				.eq("code", code)
@@ -102,6 +103,7 @@ public class RequirementQueryRepository {
 	 * @param code		需求编码
 	 * @param oldStatus	状态
 	 */
+	@Override
 	public int getPendingRelationCount(String code, RequirementStatus oldStatus) {
 		return this.userRequirementRelationMapper.selectCount(new QueryWrapper<>(UserRequirementRelation.class)
 				.eq("code", code)

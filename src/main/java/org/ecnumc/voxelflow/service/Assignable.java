@@ -17,7 +17,7 @@ public interface Assignable {
 	 * @return 错误码，null 表示成功
 	 */
 	@Nullable
-	ClientErrorCode assignRequirement(String code, String assignee, String uid);
+	ClientErrorCode assign(String code, String assignee, String uid);
 
 	/**
 	 * 取消分配给用户
@@ -27,5 +27,5 @@ public interface Assignable {
 	 * @return 错误码，null 表示成功
 	 */
 	@Nullable
-	ClientErrorCode unassignRequirement(String code, String assignee, String uid);
+	ClientErrorCode unassign(String code, String assignee, String uid);
 }

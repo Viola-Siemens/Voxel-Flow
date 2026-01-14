@@ -3,6 +3,7 @@ package org.ecnumc.voxelflow.po;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import javax.annotation.Nonnull;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -11,13 +12,13 @@ import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 /**
- * 问题修改记录
+ * 部门/小组关系表
  * @author liudongyu
  */
 @Data
-@Table(name = "user_issue_rel")
-@TableName(value = "user_issue_rel")
-public class UserIssueRelation {
+@Table(name = "user_group_rel")
+@TableName(value = "user_group_rel")
+public class UserGroupRelation {
 	/**
 	 * 自增主键
 	 */
@@ -26,40 +27,25 @@ public class UserIssueRelation {
 	private Long id;
 
 	/**
-	 * 问题编号
-	 * @see Issue#getCode
-	 */
-	@Pattern(regexp = "^BUG-\\d+$")
-	private String code;
-
-	/**
-	 * 用户 UUID
+	 * 用户 UID
 	 * @see User#getUid
 	 */
+	@Nonnull
 	private String uid;
 
 	/**
-	 * 修改描述，如同意/拒绝理由
+	 * 编码
+	 * @see Group#getCode
 	 */
-	private String description;
+	@Nonnull
+	@Pattern(regexp = "^[A-Z][A-Z0-9]+$")
+	private String groupCode;
 
 	/**
-	 * 关系类型
-	 * @see org.ecnumc.voxelflow.enumeration.RelationType
+	 * 是否可用。同一个 uid 有且只有唯一一个可用的 groupCode。
 	 */
-	private String relationType;
-
-	/**
-	 * 问题旧状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
-	 */
-	private String oldStatus;
-
-	/**
-	 * 问题新状态
-	 * @see org.ecnumc.voxelflow.enumeration.IssueStatus
-	 */
-	private String newStatus;
+	@Nonnull
+	private Boolean valid;
 
 	/**
 	 * 创建人

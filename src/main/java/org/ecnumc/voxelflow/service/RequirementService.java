@@ -158,7 +158,7 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	 * @return 错误码，null 表示成功
 	 */
 	@Override @Nullable
-	public ClientErrorCode approveRequirement(String code, List<String> nextOperators, String description, String uid) {
+	public ClientErrorCode approve(String code, List<String> nextOperators, String description, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
 		if (existingRequirement == null) {
@@ -221,7 +221,7 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	 * @return 错误码，null 表示成功
 	 */
 	@Override @Nullable
-	public ClientErrorCode rejectRequirement(String code, List<String> nextOperators, String description, String uid) {
+	public ClientErrorCode reject(String code, List<String> nextOperators, String description, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
 		if (existingRequirement == null) {
@@ -270,7 +270,7 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	 * @return 错误码，null 表示成功
 	 */
 	@Override @Nullable
-	public ClientErrorCode assignRequirement(String code, String assignee, String uid) {
+	public ClientErrorCode assign(String code, String assignee, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
 		if (existingRequirement == null) {
@@ -315,7 +315,7 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	 * @return 错误码，null 表示成功
 	 */
 	@Override @Nullable
-	public ClientErrorCode unassignRequirement(String code, String assignee, String uid) {
+	public ClientErrorCode unassign(String code, String assignee, String uid) {
 		// 获取原有需求
 		Requirement existingRequirement = this.requirementQueryRepository.getRequirementByCode(code);
 		if (existingRequirement == null) {

@@ -19,7 +19,7 @@ public interface Approvable {
 	 * @return 错误码，null 表示成功
 	 */
 	@Nullable
-	ClientErrorCode approveRequirement(String code, List<String> nextOperators, String description, String uid);
+	ClientErrorCode approve(String code, List<String> nextOperators, String description, String uid);
 
 	/**
 	 * 拒绝
@@ -30,5 +30,5 @@ public interface Approvable {
 	 * @return 错误码，null 表示成功
 	 */
 	@Nullable
-	ClientErrorCode rejectRequirement(String code, List<String> nextOperators, String description, String uid);
+	ClientErrorCode reject(String code, List<String> nextOperators, String description, String uid);
 }
