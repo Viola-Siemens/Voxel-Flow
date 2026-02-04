@@ -113,7 +113,7 @@ public enum RequirementStatus implements IOperableStatus {
 			return DEVELOPING;
 		}
 	},
-	CHECKING("验收中", ImmutableSet.of(BUSINESS)) {
+	CHECKING("验收中", ImmutableSet.of(BUSINESS, PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
 			return RELEASED;
