@@ -38,32 +38,51 @@ public class RetrospectiveQueryRepository implements PendingRelationQueryable<Us
 	}
 
 	/**
-	 * 根据标题获取复盘
-	 * @param titles	标题关键词
+	 * 列表查询复盘，支持根据标题、状态筛选（复盘没有优先级字段）
+	 * @param titles	标题关键词列表
+	 * @param status	状态
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
-	 * @return 符合要求的复盘列表
+	 * @return 符合条件的复盘列表
 	 */
-	public List<Retrospective> getRetrospectiveListByTitle(List<String> titles, int pageNum, int pageSize) {
-		QueryWrapper<Retrospective> queryWrapper = new QueryWrapper<>(Retrospective.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public List<Retrospective> list(List<String> titles, @Nullable String status,
+								   int pageNum, int pageSize) {
+		QueryWrapper<Retrospective> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
 		return this.retrospectiveMapper.selectList(queryWrapper
 				.orderByDesc("updated_at")
 				.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize)));
 	}
 
 	/**
-	 * 根据标题获取复盘数量，用于分页
-	 * @param titles	标题关键词
-	 * @return 符合要求的复盘数量
+	 * 获取符合条件的复盘总数，用于分页
+	 * @param titles	标题关键词列表
+	 * @param status	状态
+	 * @return 符合条件的复盘数量
 	 */
-	public int getRetrospectiveCountByTitle(List<String> titles) {
-		QueryWrapper<Retrospective> queryWrapper = new QueryWrapper<>(Retrospective.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public int listCount(List<String> titles, @Nullable String status) {
+		QueryWrapper<Retrospective> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
 		return this.retrospectiveMapper.selectCount(queryWrapper).intValue();
 	}
 

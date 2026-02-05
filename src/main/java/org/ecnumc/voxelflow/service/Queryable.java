@@ -19,11 +19,13 @@ public interface Queryable<R extends Serializable> {
 	R queryByCode(String code);
 
 	/**
-	 * 通过标题查询
-	 * @param title		标题
+	 * 列表查询，支持根据标题、状态、优先级等条件筛选
+	 * @param title		标题关键词（若干个关键词）
+	 * @param status	状态
+	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
 	 * @return 查询结果
 	 */
-	PagedResp<R> queryByTitle(String title, int pageNum, int pageSize);
+	PagedResp<R> list(@Nullable String title, @Nullable String status, @Nullable Integer priority, int pageNum, int pageSize);
 }

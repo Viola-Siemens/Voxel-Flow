@@ -10,11 +10,11 @@ import org.ecnumc.voxelflow.resp.BaseResp;
 import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.IssueResp;
 import org.ecnumc.voxelflow.service.IssueService;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -92,15 +92,19 @@ public class IssueController {
 	}
 
 	/**
-	 * 查询缺陷
-	 * @param title	标题关键词
-	 * @return 缺陷响应
+	 * 获取缺陷列表
+	 * @param title		标题关键词
+	 * @param status	状态
+	 * @param priority	优先级
+	 * @param pageNum	页码
+	 * @param pageSize	每页数量
+	 * @return 缺陷列表
 	 */
-	@GetMapping("/query-title")
-	public BaseResp<PagedResp<IssueResp>> queryIssueByTitle(@Length(max = 1023) @RequestParam(value = "title") String title,
-																	   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-																	   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-		return BaseResp.success(this.issueService.queryByTitle(title, pageNum, pageSize));
+	@GetMapping("/list")
+	public BaseResp<PagedResp<IssueResp>> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+											   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+											   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+		return BaseResp.success(this.issueService.list(title, status, priority, pageNum, pageSize));
 	}
 
 	/**

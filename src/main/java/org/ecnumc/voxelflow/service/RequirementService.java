@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,19 +81,27 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	}
 
 	/**
-	 * 通过标题查询需求
-	 * @param title	需求标题
-	 * @return 需求响应
+	 * 列表查询需求，支持根据标题、状态、优先级筛选
+	 * @param title		需求标题关键词
+	 * @param status	需求状态
+	 * @param priority	需求优先级
+	 * @param pageNum	页码
+	 * @param pageSize	页大小
+	 * @return 需求响应列表
 	 */
 	@Override
-	public PagedResp<RequirementResp> queryByTitle(String title, int pageNum, int pageSize) {
-		List<String> titles = Arrays.asList(title.split(" "));
+	public PagedResp<RequirementResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+										   int pageNum, int pageSize) {
+		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
+		List<String> titles = (title != null && !title.trim().isEmpty()) ?
+				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
+
 		List<RequirementResp> requirements = this.requirementQueryRepository
-				.getRequirementListByTitle(titles, pageNum, pageSize)
+				.list(titles, status, priority, pageNum, pageSize)
 				.stream()
 				.map(this.requirementConverter::convertToResp)
 				.collect(Collectors.toList());
-		int total = this.requirementQueryRepository.getRequirementCountByTitle(titles);
+		int total = this.requirementQueryRepository.listCount(titles, status, priority);
 		return PagedResp.<RequirementResp>builder()
 				.pageNum(pageNum).pageSize(pageSize).total(total)
 				.list(requirements)

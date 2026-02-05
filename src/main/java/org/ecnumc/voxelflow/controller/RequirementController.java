@@ -10,11 +10,11 @@ import org.ecnumc.voxelflow.resp.BaseResp;
 import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.RequirementResp;
 import org.ecnumc.voxelflow.service.RequirementService;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -93,15 +93,19 @@ public class RequirementController {
 	}
 
 	/**
-	 * 查询需求
-	 * @param title	标题关键词
-	 * @return 需求响应
+	 * 获取需求列表
+	 * @param title		标题关键词
+	 * @param status	状态
+	 * @param priority	优先级
+	 * @param pageNum	页码
+	 * @param pageSize	每页数量
+	 * @return 需求列表
 	 */
-	@GetMapping("/query-title")
-	public BaseResp<PagedResp<RequirementResp>> queryRequirementByTitle(@Length(max = 1023) @RequestParam(value = "title") String title,
-																	   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-																	   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-		return BaseResp.success(this.requirementService.queryByTitle(title, pageNum, pageSize));
+	@GetMapping("/list")
+	public BaseResp<PagedResp<RequirementResp>> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+													 @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+													 @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+		return BaseResp.success(this.requirementService.list(title, status, priority, pageNum, pageSize));
 	}
 
 	/**

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -86,22 +87,30 @@ public class StoryService implements Queryable<StoryResp>, Approvable, Assignabl
 	}
 
 	/**
-	 * 通过标题查询故事
-	 * @param title	故事标题
-	 * @return 故事响应
+	 * 列表查询故事，支持根据标题、状态、优先级筛选
+	 * @param title		故事标题关键词
+	 * @param status	故事状态
+	 * @param priority	故事优先级
+	 * @param pageNum	页码
+	 * @param pageSize	页大小
+	 * @return 故事响应列表
 	 */
 	@Override
-	public PagedResp<StoryResp> queryByTitle(String title, int pageNum, int pageSize) {
-		List<String> titles = Arrays.asList(title.split(" "));
-		List<StoryResp> storys = this.storyQueryRepository
-				.getStoryListByTitle(titles, pageNum, pageSize)
+	public PagedResp<StoryResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+									int pageNum, int pageSize) {
+		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
+		List<String> titles = (title != null && !title.trim().isEmpty()) ?
+				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
+
+		List<StoryResp> stories = this.storyQueryRepository
+				.list(titles, status, priority, pageNum, pageSize)
 				.stream()
 				.map(this.storyConverter::convertToResp)
 				.collect(Collectors.toList());
-		int total = this.storyQueryRepository.getStoryCountByTitle(titles);
+		int total = this.storyQueryRepository.listCount(titles, status, priority);
 		return PagedResp.<StoryResp>builder()
 				.pageNum(pageNum).pageSize(pageSize).total(total)
-				.list(storys)
+				.list(stories)
 				.build();
 	}
 

@@ -54,32 +54,63 @@ public class StoryQueryRepository implements PendingRelationQueryable<UserStoryR
 	}
 
 	/**
-	 * 根据标题获取故事
-	 * @param titles	标题关键词
+	 * 列表查询故事，支持根据标题、状态、优先级筛选
+	 * @param titles	标题关键词列表
+	 * @param status	状态
+	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
-	 * @return 符合要求的故事列表
+	 * @return 符合条件的故事列表
 	 */
-	public List<Story> getStoryListByTitle(List<String> titles, int pageNum, int pageSize) {
-		QueryWrapper<Story> queryWrapper = new QueryWrapper<>(Story.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public List<Story> list(List<String> titles, @Nullable String status, @Nullable Integer priority,
+						   int pageNum, int pageSize) {
+		QueryWrapper<Story> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
+		// 优先级筛选喵~
+		if(priority != null) {
+			queryWrapper.eq("priority", priority);
+		}
+
 		return this.storyMapper.selectList(queryWrapper
 				.orderByDesc("updated_at")
 				.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize)));
 	}
 
 	/**
-	 * 根据标题获取故事数量，用于分页
-	 * @param titles	标题关键词
-	 * @return 符合要求的故事数量
+	 * 获取符合条件的故事总数，用于分页
+	 * @param titles	标题关键词列表
+	 * @param status	状态
+	 * @param priority	优先级
+	 * @return 符合条件的故事数量
 	 */
-	public int getStoryCountByTitle(List<String> titles) {
-		QueryWrapper<Story> queryWrapper = new QueryWrapper<>(Story.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public int listCount(List<String> titles, @Nullable String status, @Nullable Integer priority) {
+		QueryWrapper<Story> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
+		// 优先级筛选喵~
+		if(priority != null) {
+			queryWrapper.eq("priority", priority);
+		}
+
 		return this.storyMapper.selectCount(queryWrapper).intValue();
 	}
 

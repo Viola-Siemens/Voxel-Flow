@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,19 +69,27 @@ public class RetrospectiveService implements Queryable<RetrospectiveResp>, Appro
 	}
 
 	/**
-	 * 通过标题查询复盘
-	 * @param title	复盘标题
-	 * @return 复盘响应
+	 * 列表查询复盘单，支持根据标题、状态筛选
+	 * @param title		复盘标题关键词
+	 * @param status	复盘状态
+	 * @param priority	优先级（复盘单不支持，忽略此参数）
+	 * @param pageNum	页码
+	 * @param pageSize	页大小
+	 * @return 复盘响应列表
 	 */
 	@Override
-	public PagedResp<RetrospectiveResp> queryByTitle(String title, int pageNum, int pageSize) {
-		List<String> titles = Arrays.asList(title.split(" "));
+	public PagedResp<RetrospectiveResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+											 int pageNum, int pageSize) {
+		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
+		List<String> titles = (title != null && !title.trim().isEmpty()) ?
+				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
+
 		List<RetrospectiveResp> retrospectives = this.retrospectiveQueryRepository
-				.getRetrospectiveListByTitle(titles, pageNum, pageSize)
+				.list(titles, status, pageNum, pageSize)
 				.stream()
 				.map(this.retrospectiveConverter::convertToResp)
 				.collect(Collectors.toList());
-		int total = this.retrospectiveQueryRepository.getRetrospectiveCountByTitle(titles);
+		int total = this.retrospectiveQueryRepository.listCount(titles, status);
 		return PagedResp.<RetrospectiveResp>builder()
 				.pageNum(pageNum).pageSize(pageSize).total(total)
 				.list(retrospectives)

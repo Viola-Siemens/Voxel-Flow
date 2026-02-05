@@ -56,32 +56,63 @@ public class RequirementQueryRepository implements PendingRelationQueryable<User
 	}
 
 	/**
-	 * 根据标题获取需求
-	 * @param titles	标题关键词
+	 * 列表查询需求，支持根据标题、状态、优先级筛选
+	 * @param titles	标题关键词列表
+	 * @param status	状态
+	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
-	 * @return 符合要求的需求列表
+	 * @return 符合条件的需求列表
 	 */
-	public List<Requirement> getRequirementListByTitle(List<String> titles, int pageNum, int pageSize) {
-		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>(Requirement.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public List<Requirement> list(List<String> titles, @Nullable String status, @Nullable Integer priority,
+								  int pageNum, int pageSize) {
+		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
+		// 优先级筛选喵~
+		if(priority != null) {
+			queryWrapper.eq("priority", priority);
+		}
+
 		return this.requirementMapper.selectList(queryWrapper
 				.orderByDesc("updated_at")
 				.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize)));
 	}
 
 	/**
-	 * 根据标题获取需求数量，用于分页
-	 * @param titles	标题关键词
-	 * @return 符合要求的需求数量
+	 * 获取符合条件的需求总数，用于分页
+	 * @param titles	标题关键词列表
+	 * @param status	状态
+	 * @param priority	优先级
+	 * @return 符合条件的需求数量
 	 */
-	public int getRequirementCountByTitle(List<String> titles) {
-		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>(Requirement.class);
-		if(!titles.isEmpty()) {
-			titles.forEach(title -> queryWrapper.like("title", "%" + title + "%"));
+	public int listCount(List<String> titles, @Nullable String status, @Nullable Integer priority) {
+		QueryWrapper<Requirement> queryWrapper = new QueryWrapper<>();
+
+		// 标题关键词筛选喵~
+		if(!titles.isEmpty() && titles.size() < 256) {
+			titles.forEach(title -> queryWrapper.like("title", title));
 		}
+
+		// 状态筛选喵~
+		if(status != null && !status.trim().isEmpty()) {
+			queryWrapper.eq("status", status);
+		}
+
+		// 优先级筛选喵~
+		if(priority != null) {
+			queryWrapper.eq("priority", priority);
+		}
+
 		return this.requirementMapper.selectCount(queryWrapper).intValue();
 	}
 

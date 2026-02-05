@@ -10,11 +10,11 @@ import org.ecnumc.voxelflow.resp.BaseResp;
 import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.RetrospectiveResp;
 import org.ecnumc.voxelflow.service.RetrospectiveService;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -90,15 +90,18 @@ public class RetrospectiveController {
 	}
 
 	/**
-	 * 查询复盘
-	 * @param title	标题关键词
-	 * @return 复盘响应
+	 * 获取复盘列表
+	 * @param title		标题关键词
+	 * @param status	状态
+	 * @param pageNum	页码
+	 * @param pageSize	每页数量
+	 * @return 复盘列表
 	 */
-	@GetMapping("/query-title")
-	public BaseResp<PagedResp<RetrospectiveResp>> queryRetrospectiveByTitle(@Length(max = 1023) @RequestParam(value = "title") String title,
-																	   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-																	   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-		return BaseResp.success(this.retrospectiveService.queryByTitle(title, pageNum, pageSize));
+	@GetMapping("/list")
+	public BaseResp<PagedResp<RetrospectiveResp>> list(@Nullable String title, @Nullable String status,
+													   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+													   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
+		return BaseResp.success(this.retrospectiveService.list(title, status, null, pageNum, pageSize));
 	}
 
 	/**

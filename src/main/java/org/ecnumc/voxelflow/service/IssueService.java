@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,19 +72,27 @@ public class IssueService implements Queryable<IssueResp>, Approvable, Assignabl
 	}
 
 	/**
-	 * 通过标题查询缺陷
-	 * @param title	缺陷标题
-	 * @return 缺陷响应
+	 * 列表查询缺陷，支持根据标题、状态、优先级筛选
+	 * @param title		缺陷标题关键词
+	 * @param status	缺陷状态
+	 * @param priority	缺陷优先级
+	 * @param pageNum	页码
+	 * @param pageSize	页大小
+	 * @return 缺陷响应列表
 	 */
 	@Override
-	public PagedResp<IssueResp> queryByTitle(String title, int pageNum, int pageSize) {
-		List<String> titles = Arrays.asList(title.split(" "));
+	public PagedResp<IssueResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
+									int pageNum, int pageSize) {
+		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
+		List<String> titles = (title != null && !title.trim().isEmpty()) ?
+				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
+
 		List<IssueResp> issues = this.issueQueryRepository
-				.getIssueListByTitle(titles, pageNum, pageSize)
+				.list(titles, status, priority, pageNum, pageSize)
 				.stream()
 				.map(this.issueConverter::convertToResp)
 				.collect(Collectors.toList());
-		int total = this.issueQueryRepository.getIssueCountByTitle(titles);
+		int total = this.issueQueryRepository.listCount(titles, status, priority);
 		return PagedResp.<IssueResp>builder()
 				.pageNum(pageNum).pageSize(pageSize).total(total)
 				.list(issues)
