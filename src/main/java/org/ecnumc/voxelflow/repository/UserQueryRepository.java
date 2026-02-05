@@ -27,6 +27,35 @@ public class UserQueryRepository {
 	@Autowired
 	private UserRoleRelationMapper userRoleRelationMapper;
 
+	public int listCount(@Nullable String username, @Nullable String emailVerified, @Nullable String status) {
+		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+		if(username != null) {
+			queryWrapper.like("username", username);
+		}
+		if(emailVerified != null) {
+			queryWrapper.eq("email_verified", emailVerified);
+		}
+		if(status != null) {
+			queryWrapper.eq("user_status", status);
+		}
+		return this.userMapper.selectCount(queryWrapper).intValue();
+	}
+
+	public List<User> list(@Nullable String username, @Nullable String emailVerified, @Nullable String status,
+						   int pageNum, int pageSize) {
+		QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+		if(username != null) {
+			queryWrapper.like("username", username);
+		}
+		if(emailVerified != null) {
+			queryWrapper.eq("email_verified", emailVerified);
+		}
+		if(status != null) {
+			queryWrapper.eq("user_status", status);
+		}
+		return this.userMapper.selectList(queryWrapper.last("LIMIT " + pageSize + " OFFSET " + ((pageNum - 1) * pageSize)));
+	}
+
 	@Nullable
 	public User getByUsername(String username) {
 		return this.userMapper.selectOne(new QueryWrapper<User>().eq("username", username));

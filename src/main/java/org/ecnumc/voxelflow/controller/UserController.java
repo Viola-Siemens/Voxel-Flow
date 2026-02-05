@@ -5,16 +5,18 @@ import org.ecnumc.voxelflow.req.UserCommandReq;
 import org.ecnumc.voxelflow.req.UserLogInReq;
 import org.ecnumc.voxelflow.req.UserSignUpReq;
 import org.ecnumc.voxelflow.resp.BaseResp;
+import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.TokenResp;
+import org.ecnumc.voxelflow.resp.UserResp;
 import org.ecnumc.voxelflow.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 /**
  * 用户 Controller
@@ -25,6 +27,28 @@ import javax.servlet.http.HttpServletRequest;
 public class UserController {
 	@Autowired
 	private UserService userService;
+
+	/**
+	 * 获取用户列表
+	 * @param username		用户名关键字
+	 * @param emailVerified	邮箱验证状态
+	 * @param status		用户状态
+	 * @param pageNum		页码
+	 * @param pageSize		每页数量
+	 * @return 用户列表
+	 */
+	@GetMapping("/list")
+	public BaseResp<PagedResp<UserResp>> list(@Nullable String username, @Nullable String emailVerified, @Nullable String status,
+											  @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+											  @Min(value = 1) @Max(value = 10000) int pageSize,
+											  HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		PagedResp<UserResp> resp = this.userService.list("%" + username + "%", emailVerified, status, pageNum, pageSize, uid);
+		if(resp == null) {
+			return BaseResp.error(ClientErrorCode.ERROR_1491);
+		}
+		return BaseResp.success(resp);
+	}
 
 	/**
 	 * 注册

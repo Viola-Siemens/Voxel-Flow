@@ -1,6 +1,7 @@
 package org.ecnumc.voxelflow.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.converter.UserConverter;
 import org.ecnumc.voxelflow.enumeration.ClientErrorCode;
 import org.ecnumc.voxelflow.enumeration.UserRole;
 import org.ecnumc.voxelflow.enumeration.UserStatus;
@@ -8,7 +9,9 @@ import org.ecnumc.voxelflow.po.User;
 import org.ecnumc.voxelflow.repository.UserCommandRepository;
 import org.ecnumc.voxelflow.repository.UserQueryRepository;
 import org.ecnumc.voxelflow.repository.UserValidationRepository;
+import org.ecnumc.voxelflow.resp.PagedResp;
 import org.ecnumc.voxelflow.resp.TokenResp;
+import org.ecnumc.voxelflow.resp.UserResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * 用户服务，包括登录、注册等，不依赖 token
@@ -32,6 +36,35 @@ public class UserService {
 
 	@Autowired
 	private UserValidationRepository userValidationRepository;
+
+	@Autowired
+	private UserConverter userConverter;
+
+	/**
+	 * 获取用户总数
+	 * @param username		用户名关键字
+	 * @param emailVerified	邮箱验证状态
+	 * @param status		用户状态
+	 * @return 用户总数
+	 */
+	@Nullable
+	public PagedResp<UserResp> list(@Nullable String username, @Nullable String emailVerified, @Nullable String status,
+									int pageNum, int pageSize, String uid) {
+		List<UserRole> userRoles = this.userQueryRepository.getUserRoles(uid);
+
+		// 检查用户是否有权限查询用户，只有超级管理员可以查询
+		if (!userRoles.contains(UserRole.SUPER_ADMIN)) {
+			log.warn("User {} does not have permission to query user list", uid);
+			return null;
+		}
+
+		return PagedResp.<UserResp>builder()
+				.pageNum(pageNum).pageSize(pageSize)
+				.total(this.userQueryRepository.listCount(username, emailVerified, status))
+				.list(this.userQueryRepository.list(username, emailVerified, status, pageNum, pageSize)
+						.stream().map(this.userConverter::convertToResp).collect(Collectors.toList()))
+				.build();
+	}
 
 	/**
 	 * 注册
