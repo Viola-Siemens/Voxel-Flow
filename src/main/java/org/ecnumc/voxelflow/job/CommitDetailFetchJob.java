@@ -21,7 +21,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 获取提交详情，定时请求
+ * 获取提交详情，定时请求喵~
+ * @author liudongyu
  */
 @Component
 @EnableScheduling
@@ -36,7 +37,7 @@ public class CommitDetailFetchJob {
 	private static final String LOCK_KEY = "commit_detail_fetch";
 
 	/**
-	 * 每 10 分钟请求一次，失败则下次重新请求
+	 * 每 10 分钟请求一次，失败则下次重新请求喵~
 	 */
 	@Scheduled(cron = "0 0/10 * * * ?")
 	public void compute() {

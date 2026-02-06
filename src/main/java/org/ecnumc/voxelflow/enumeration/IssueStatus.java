@@ -10,6 +10,8 @@ import java.util.Set;
 import static org.ecnumc.voxelflow.enumeration.UserRole.*;
 
 /**
+ * 问题状态枚举，定义了问题从创建到发布的完整生命周期状态喵~
+ *
  * @author liudongyu
  */
 @Getter
@@ -108,19 +110,19 @@ public enum IssueStatus implements IOperableStatus {
 	private final Set<UserRole> operableRoles;
 
 	/**
-	 * 负责人完成该阶段
+	 * 负责人完成该阶段喵~
 	 * @return 下一个阶段
 	 */
 	public abstract IssueStatus approved();
 
 	/**
-	 * 负责人拒绝该阶段
+	 * 负责人拒绝该阶段喵~
 	 * @return 拒绝后的阶段
 	 */
 	public abstract IssueStatus rejected();
 
 	/**
-	 * 问题被取消
+	 * 问题被取消喵~
 	 * @return 取消后的阶段
 	 */
 	public IssueStatus canceled() {

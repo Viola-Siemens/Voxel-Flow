@@ -22,7 +22,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * 用户服务，包括登录、注册等，不依赖 token
+ * 用户服务，包括登录、注册等
  * @author liudongyu
  */
 @Service
@@ -41,11 +41,15 @@ public class UserService {
 	private UserConverter userConverter;
 
 	/**
-	 * 获取用户总数
+	 * 查询用户列表，支持根据用户名、邮箱验证状态、用户状态筛选喵~
+	 *
 	 * @param username		用户名关键字
 	 * @param emailVerified	邮箱验证状态
 	 * @param status		用户状态
-	 * @return 用户总数
+	 * @param pageNum		页码
+	 * @param pageSize		每页大小
+	 * @param uid			操作用户 ID（需要超级管理员权限）
+	 * @return 分页的用户列表，如果权限不足则返回 null
 	 */
 	@Nullable
 	public PagedResp<UserResp> list(@Nullable String username, @Nullable String emailVerified, @Nullable String status,

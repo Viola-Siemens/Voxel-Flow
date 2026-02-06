@@ -10,6 +10,11 @@ import org.ecnumc.voxelflow.resp.IndexResp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * 首页服务，提供用户主界面的任务统计信息喵~
+ *
+ * @author liudongyu
+ */
 @Service
 @Slf4j
 public class IndexService {

@@ -22,7 +22,12 @@ import java.util.stream.Collectors;
 import static org.ecnumc.voxelflow.util.IOperableStatus.hasPermissionToModify;
 
 /**
- * 故事服务
+ * 故事服务，提供故事的完整生命周期管理功能喵~
+ * <p>
+ * 包括故事的创建、查询、审批、拒绝、分配、取消等操作，
+ * 支持故事从草稿到完成的完整状态流转喵~
+ * </p>
+ *
  * @author liudongyu
  */
 @Service

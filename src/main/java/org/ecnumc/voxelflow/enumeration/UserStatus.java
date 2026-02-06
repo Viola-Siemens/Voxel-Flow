@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户状态
+ * 用户状态喵~
  * @author liudongyu
  */
 @Getter
@@ -15,7 +15,7 @@ public enum UserStatus {
 	 */
 	ACTIVE,
 	/**
-	 * 禁用用户
+	 * 封禁用户
 	 */
 	BANNED,
 	/**

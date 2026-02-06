@@ -10,6 +10,8 @@ import java.util.Set;
 import static org.ecnumc.voxelflow.enumeration.UserRole.*;
 
 /**
+ * 需求状态枚举，定义了需求从创建到发布的完整生命周期状态喵~
+ *
  * @author liudongyu
  */
 @Getter
@@ -162,19 +164,19 @@ public enum RequirementStatus implements IOperableStatus {
 	private final Set<UserRole> operableRoles;
 
 	/**
-	 * 负责人完成该阶段
+	 * 负责人完成该阶段喵~
 	 * @return 下一个阶段
 	 */
 	public abstract RequirementStatus approved();
 
 	/**
-	 * 负责人拒绝该阶段
+	 * 负责人拒绝该阶段喵~
 	 * @return 拒绝后的阶段
 	 */
 	public abstract RequirementStatus rejected();
 
 	/**
-	 * 需求被取消
+	 * 需求被取消喵~
 	 * @return 取消后的阶段
 	 */
 	public RequirementStatus canceled() {
@@ -182,7 +184,7 @@ public enum RequirementStatus implements IOperableStatus {
 	}
 
 	/**
-	 * 是否应等待所有负责人完成
+	 * 是否应等待所有负责人完成喵~
 	 * @return true 表示等待所有负责人完成，false 则任意一位完成即可
 	 */
 	public boolean waitingForAllApprovals() {

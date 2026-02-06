@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 复盘状态
+ * 复盘状态喵~
  * @author liudongyu
  */
 @Getter
@@ -43,7 +43,7 @@ public enum RetrospectiveStatus {
 	private final String name;
 
 	/**
-	 * 是否应等待所有负责人完成
+	 * 是否应等待所有负责人完成喵~
 	 * @return true 表示等待所有负责人完成，false 则任意一位完成即可
 	 */
 	public boolean waitingForAllApprovals() {
@@ -51,7 +51,7 @@ public enum RetrospectiveStatus {
 	}
 
 	/**
-	 * 获取下一个状态
+	 * 获取下一个状态喵~
 	 * @return 下一个状态
 	 */
 	public abstract RetrospectiveStatus next();

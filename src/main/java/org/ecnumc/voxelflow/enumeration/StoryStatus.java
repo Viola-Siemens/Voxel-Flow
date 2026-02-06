@@ -13,7 +13,7 @@ import static org.ecnumc.voxelflow.enumeration.UserRole.BUILDING;
 import static org.ecnumc.voxelflow.enumeration.UserRole.MODEL;
 
 /**
- * 故事状态
+ * 故事状态喵~
  * @author liudongyu
  */
 @Getter
@@ -90,19 +90,19 @@ public enum StoryStatus implements IOperableStatus {
 	private final Set<UserRole> operableRoles;
 
 	/**
-	 * 负责人完成该阶段
+	 * 负责人完成该阶段喵~
 	 * @return 下一个阶段
 	 */
 	public abstract StoryStatus approved();
 
 	/**
-	 * 负责人拒绝该阶段
+	 * 负责人拒绝该阶段喵~
 	 * @return 拒绝后的阶段
 	 */
 	public abstract StoryStatus rejected();
 
 	/**
-	 * 需求被取消
+	 * 需求被取消喵~
 	 * @return 取消后的阶段
 	 */
 	public StoryStatus canceled() {

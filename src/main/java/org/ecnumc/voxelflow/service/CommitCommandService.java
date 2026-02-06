@@ -13,6 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * 提交记录命令服务，处理代码提交记录的写入操作喵~
+ *
+ * @author liudongyu
+ */
 @Service
 @Slf4j
 public class CommitCommandService {

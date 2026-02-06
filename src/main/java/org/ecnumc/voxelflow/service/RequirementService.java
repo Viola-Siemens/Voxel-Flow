@@ -21,7 +21,12 @@ import java.util.stream.Collectors;
 import static org.ecnumc.voxelflow.util.IOperableStatus.hasPermissionToModify;
 
 /**
- * 需求服务
+ * 需求服务，提供需求的完整生命周期管理功能喵~
+ * <p>
+ * 包括需求的创建、查询、审批、拒绝、分配、取消等操作，
+ * 支持需求从审核到发布的完整状态流转喵~
+ * </p>
+ *
  * @author liudongyu
  */
 @Service

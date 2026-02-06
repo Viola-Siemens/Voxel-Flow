@@ -6,6 +6,11 @@ import org.ecnumc.voxelflow.bo.IErrorCode;
 
 import java.io.Serializable;
 
+/**
+ * 客户端错误码枚举，定义了系统中所有可能的业务错误类型和错误信息喵~
+ *
+ * @author liudongyu
+ */
 @Getter
 @AllArgsConstructor
 public enum ClientErrorCode implements IErrorCode, Serializable {
@@ -42,6 +47,12 @@ public enum ClientErrorCode implements IErrorCode, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 错误码喵~
+	 */
 	private final int code;
+	/**
+	 * 错误信息喵~
+	 */
 	private final String message;
 }

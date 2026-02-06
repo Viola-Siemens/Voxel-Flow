@@ -11,6 +11,11 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Nullable;
 import java.util.stream.Collectors;
 
+/**
+ * 提交记录查询服务，提供代码提交记录的查询功能喵~
+ *
+ * @author liudongyu
+ */
 @Service
 @Slf4j
 public class CommitQueryService {

@@ -21,7 +21,12 @@ import java.util.stream.Collectors;
 import static org.ecnumc.voxelflow.util.IOperableStatus.hasPermissionToModify;
 
 /**
- * 缺陷服务
+ * 缺陷服务，提供缺陷的完整生命周期管理功能喵~
+ * <p>
+ * 包括缺陷的创建、查询、审批、拒绝、分配、取消等操作，
+ * 支持缺陷从审核到发布的完整状态流转喵~
+ * </p>
+ *
  * @author liudongyu
  */
 @Service

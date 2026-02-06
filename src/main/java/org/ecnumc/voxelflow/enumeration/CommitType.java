@@ -27,10 +27,22 @@ public enum CommitType {
 
 	private static final Map<String, CommitType> MAP;
 
+	/**
+	 * 根据名称获取提交类型喵~
+	 *
+	 * @param name 提交类型名称喵~
+	 * @return 对应的提交类型，如果不存在则返回 null 喵~
+	 */
 	public static CommitType getByName(String name) {
 		return MAP.get(name);
 	}
 
+	/**
+	 * 检查给定的名称是否是有效的提交类型喵~
+	 *
+	 * @param name 提交类型名称喵~
+	 * @return true 表示有效，false 表示无效喵~
+	 */
 	public static boolean isValid(String name) {
 		return MAP.containsKey(name);
 	}

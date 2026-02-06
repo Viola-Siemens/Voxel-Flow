@@ -19,7 +19,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 复盘服务
+ * 复盘服务，提供项目复盘的完整生命周期管理功能喵~
+ * <p>
+ * 包括复盘的创建、查询、审批、拒绝、分配、取消等操作，
+ * 支持复盘从就绪到完成的完整状态流转喵~
+ * </p>
+ *
  * @author liudongyu
  */
 @Service
