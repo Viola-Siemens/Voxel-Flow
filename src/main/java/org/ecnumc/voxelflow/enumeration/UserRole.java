@@ -1,5 +1,10 @@
 package org.ecnumc.voxelflow.enumeration;
 
+/**
+ * 用户角色枚举，定义了系统中所有可用的用户角色类型喵~
+ *
+ * @author liudongyu
+ */
 public enum UserRole {
 	/**
 	 * 业务方，负责提供业务需求、项目验收

@@ -5,7 +5,17 @@ import org.ecnumc.voxelflow.enumeration.UserRole;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 可操作状态接口，定义了状态与可操作角色的关系喵~
+ *
+ * @author liudongyu
+ */
 public interface IOperableStatus {
+	/**
+	 * 获取当前状态下可操作的角色集合喵~
+	 *
+	 * @return 可操作的角色集合喵~
+	 */
 	Set<UserRole> getOperableRoles();
 
 	/**
