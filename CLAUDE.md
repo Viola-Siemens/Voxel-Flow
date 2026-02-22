@@ -46,19 +46,52 @@ java -jar build/libs/voxelflow-0.0.1.jar
 
 # 运行单个测试方法
 ./gradlew test --tests org.ecnumc.voxelflow.test.RequirementServiceTest.testApprove
+
+# 运行测试并生成报告
+./gradlew test --tests org.ecnumc.voxelflow.test.*
+
+# 查看测试报告
+# 报告位于：build/reports/tests/test/index.html
+```
+
+### 调试与日志
+```bash
+# 查看应用日志（运行时）
+# 日志会输出到控制台
+
+# 查看 MyBatis SQL 日志
+# 已在 application.properties 中配置：
+# mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl
+
+# 检查应用健康状态
+curl http://localhost:8078/actuator/health
+
+# 查看应用信息
+curl http://localhost:8078/actuator/info
 ```
 
 ### 数据库初始化
 ```bash
 # SQL 脚本位于 sql/create_table/ 目录
-# 按顺序执行以下脚本：
+# 按顺序执行以下脚本（先创建主表，再创建关系表）：
+
+# 主表
 mysql -u root -p voxelflow < sql/create_table/user.sql
 mysql -u root -p voxelflow < sql/create_table/counter.sql
 mysql -u root -p voxelflow < sql/create_table/requirement.sql
 mysql -u root -p voxelflow < sql/create_table/story.sql
 mysql -u root -p voxelflow < sql/create_table/issue.sql
+mysql -u root -p voxelflow < sql/create_table/retrospective.sql
 mysql -u root -p voxelflow < sql/create_table/commit.sql
 mysql -u root -p voxelflow < sql/create_table/group.sql
+
+# 关系表
+mysql -u root -p voxelflow < sql/create_table/user_role_rel.sql
+mysql -u root -p voxelflow < sql/create_table/user_group_rel.sql
+mysql -u root -p voxelflow < sql/create_table/user_requirement_rel.sql
+mysql -u root -p voxelflow < sql/create_table/user_story_rel.sql
+mysql -u root -p voxelflow < sql/create_table/user_issue_rel.sql
+mysql -u root -p voxelflow < sql/create_table/user_retrospective_rel.sql
 ```
 
 ## 架构设计
@@ -111,6 +144,13 @@ Database (MySQL)
 
 **Retrospective（复盘）**：项目复盘，编号格式 RTS-{序号}
 - 状态：DRAFT → PROGRESSING → FINISHED（或 REJECTED/CANCELED）
+- 用于团队回顾和总结项目经验教训
+
+**Commit（提交）**：代码提交记录，通过 Webhook 从 GitHub 同步
+- 关联到 Story 或 Issue
+
+**Group（团队）**：用户组/团队管理
+- 用户可以加入多个团队
 
 **User（用户）**：平台用户
 - 12 种角色：BUSINESS, PRODUCT, SECURITY, ARCHITECTURE, DEVELOPMENT, TEST, OPERATION, ART, MODEL, BUILDING, DIAGNOSIS, SUPER_ADMIN
@@ -153,11 +193,19 @@ public interface IOperableStatus {
 所有状态枚举（RequirementStatus、StoryStatus 等）都实现此接口，定义每个状态下哪些角色可以操作喵~
 
 **5. 通用 Repository 接口**
-- PendingRelationQueryable<R, S>：查询待处理的用户关系
-- OperatingRelationAssignable<S>：管理用户关系分配
+- `PendingRelationQueryable<R, S>`：查询待处理的用户关系
+- `OperatingRelationAssignable<S>`：管理用户关系分配
 
 **6. 转换器模式**
 使用 MapStruct 实现 PO 到 Resp 的自动转换，解耦内部实体和 API 响应喵~
+MapStruct 在编译期生成实现代码，位于 `build/generated/sources/annotationProcessor/java/main/` 目录喵~
+
+**7. 状态枚举模式**
+每个状态枚举都实现了状态转换方法：
+- `approved()`：返回批准后的下一状态
+- `rejected()`：返回拒绝后的状态
+- `canceled()`：返回取消后的状态
+- `waitingForAllApprovals()`：是否需要所有人批准（默认 false）
 
 ### 权限控制机制
 
@@ -208,7 +256,7 @@ CounterRepository 提供原子性的编号生成喵~
 - **方法长度**：每个方法不超过 300 行
 - **命名**：类名 PascalCase，方法/变量 camelCase，常量 UPPER_SNAKE_CASE
 - **注释**：所有 public 类和方法必须有 Javadoc，方法体内适当添加注释
-- **空值安全**：对可能为空的字��/参数/返回值使用 `@Nullable` 注解
+- **空值安全**：对可能为空的字段/参数/返回值使用 `@Nullable` 注解
 
 ### 添加新功能的典型步骤
 
@@ -352,6 +400,15 @@ mapper.updateBatchById(list);
 **5. 事务管理**
 Service 层方法使用 `@Transactional` 注解确保数据一致性喵~
 
+**6. 多方会签逻辑**
+- 当 `waitingForAllApprovals()` 返回 true 时，必须所有人都批准才能流转到下一状态
+- 检查 `getPendingRelationCount()` 是否为 0 来判断是否所有人都已批准
+- 使用 `skipRemainingRelations()` 将其他待处理关系设为 IGNORED（仅单人批准模式）
+
+**7. Lombok 与 MapStruct 配置**
+- build.gradle 中必须先配置 Lombok annotationProcessor，再配置 MapStruct
+- MapStruct 需要使用 Lombok 生成的 getter/setter，因此顺序很重要
+
 ## 测试策略
 
 **单元测试位置**：`src/test/java/org/ecnumc/voxelflow/test/`
@@ -398,6 +455,68 @@ test(REQ-1): 添加需求服务单元测试
 **applicationContext.xml**：Spring Bean 配置（如果存在）
 
 **注意**：不要将敏感信息（数据库密码、API 密钥等）提交到版本控制系统喵~
+
+## API 端点概览
+
+所有 API 端点（除了 /user/sign-up, /user/log-in, /webhook 和 /error）都需要在请求头中携带 Token 信息喵~
+
+**请求头格式**：
+- `p_t`：用户 token
+- `p_u`：用户 uid
+
+### 核心端点
+
+**用户管理 (`/user`)**：
+- POST `/sign-up` - 用户注册（无需 token）
+- POST `/log-in` - 用户登录（无需 token）
+- GET `/query` - 查询用户信息
+- GET `/list` - 用户列表查询
+
+**需求管理 (`/requirement`)**：
+- POST `/create` - 创建需求
+- POST `/update` - 更新需求
+- GET `/query?code={code}` - 查询需求
+- GET `/list?title={title}&status={status}&priority={priority}&pageNum={pageNum}&pageSize={pageSize}` - 需求列表
+- POST `/approve` - 批准需求
+- POST `/reject` - 拒绝需求
+- POST `/assign` - 分配需求
+- POST `/unassign` - 取消分配需求
+
+**故事管理 (`/story`)**：
+- POST `/create` - 创建故事
+- POST `/update` - 更新故事
+- GET `/query?code={code}` - 查询故事
+- GET `/list` - 故事列表
+- POST `/approve` - 批准故事
+- POST `/reject` - 拒绝故事
+- POST `/assign` - 分配故事
+- POST `/unassign` - 取消分配故事
+
+**缺陷管理 (`/issue`)**：
+- POST `/create` - 创建缺陷
+- POST `/update` - 更新缺陷
+- GET `/query?code={code}` - 查询缺陷
+- GET `/list` - 缺陷列表
+- POST `/approve` - 批准缺陷
+- POST `/reject` - 拒绝缺陷
+- POST `/assign` - 分配缺陷
+- POST `/unassign` - 取消分配缺陷
+
+**复盘管理 (`/retrospective`)**：
+- POST `/create` - 创建复盘
+- POST `/update` - 更新复盘
+- GET `/query?code={code}` - 查询复盘
+- GET `/list` - 复盘列表
+- POST `/approve` - 批准复盘
+- POST `/reject` - 拒绝复盘
+- POST `/assign` - 分配复盘
+- POST `/unassign` - 取消分配复盘
+
+**Webhook (`/webhook`)**：
+- POST `/github` - 接收 GitHub Webhook 回调（无需 token）
+
+**首页 (`/index`)**：
+- GET `/pending` - 查询当前用户待处理的任务列表
 
 ## 项目特色
 
