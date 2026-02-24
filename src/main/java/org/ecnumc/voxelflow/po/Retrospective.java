@@ -1,5 +1,7 @@
 package org.ecnumc.voxelflow.po;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -22,6 +24,7 @@ public class Retrospective {
 	 * 自增主键
 	 */
 	@Id
+	@TableId(value = "id", type = IdType.AUTO)
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
