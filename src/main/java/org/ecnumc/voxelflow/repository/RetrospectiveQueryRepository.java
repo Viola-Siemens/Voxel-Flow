@@ -46,7 +46,7 @@ public class RetrospectiveQueryRepository implements PendingRelationQueryable<Us
 	 * @return 符合条件的复盘列表
 	 */
 	public List<Retrospective> list(List<String> titles, @Nullable String status,
-								   int pageNum, int pageSize) {
+								   int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		QueryWrapper<Retrospective> queryWrapper = new QueryWrapper<>();
 
 		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
@@ -57,6 +57,23 @@ public class RetrospectiveQueryRepository implements PendingRelationQueryable<Us
 		// 状态筛选喵~
 		if(status != null && !status.trim().isEmpty()) {
 			queryWrapper.eq("status", status);
+		}
+
+		// 排序喵~
+		if(orderBy != null && orderDir != null) {
+			switch(orderDir) {
+				case "asc":
+					queryWrapper.orderByAsc(orderBy);
+					break;
+				case "desc":
+					queryWrapper.orderByDesc(orderBy);
+					break;
+				default:
+					queryWrapper.orderByDesc("updated_at");
+					break;
+			}
+		} else {
+			queryWrapper.orderByDesc("updated_at");
 		}
 
 		return this.retrospectiveMapper.selectList(queryWrapper

@@ -3,6 +3,8 @@ package org.ecnumc.voxelflow.req;
 import lombok.Builder;
 import lombok.Data;
 
+import javax.validation.constraints.Email;
+
 /**
  * 用户注册请求
  * @author liudongyu
@@ -21,5 +23,6 @@ public class UserSignUpReq {
 	/**
 	 * 邮箱
 	 */
+	@Email
 	private final String email;
 }

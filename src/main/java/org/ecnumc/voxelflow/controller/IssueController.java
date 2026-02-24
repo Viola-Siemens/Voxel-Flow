@@ -103,8 +103,9 @@ public class IssueController {
 	@GetMapping("/list")
 	public BaseResp<PagedResp<IssueResp>> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
 											   @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
-											   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize) {
-		return BaseResp.success(this.issueService.list(title, status, priority, pageNum, pageSize));
+											   @Min(value = 1) @Max(value = 10000) @RequestParam(value = "pageSize", defaultValue = "20") int pageSize,
+											   @Nullable String orderBy, @Nullable String orderDir) {
+		return BaseResp.success(this.issueService.list(title, status, priority, pageNum, pageSize, orderBy, orderDir));
 	}
 
 	/**

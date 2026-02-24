@@ -1,6 +1,7 @@
 package org.ecnumc.voxelflow.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.converter.CamelToSnakeConverter;
 import org.ecnumc.voxelflow.converter.StoryConverter;
 import org.ecnumc.voxelflow.enumeration.*;
 import org.ecnumc.voxelflow.po.Story;
@@ -47,6 +48,9 @@ public class StoryService implements Queryable<StoryResp>, Approvable, Assignabl
 
 	@Autowired
 	private StoryConverter storyConverter;
+
+	@Autowired
+	private CamelToSnakeConverter camelToSnakeConverter;
 
 	/**
 	 * 创建故事
@@ -102,13 +106,13 @@ public class StoryService implements Queryable<StoryResp>, Approvable, Assignabl
 	 */
 	@Override
 	public PagedResp<StoryResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
-									int pageNum, int pageSize) {
+									int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
 		List<String> titles = (title != null && !title.trim().isEmpty()) ?
 				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
 
 		List<StoryResp> stories = this.storyQueryRepository
-				.list(titles, status, priority, pageNum, pageSize)
+				.list(titles, status, priority, pageNum, pageSize, this.camelToSnakeConverter.convert(orderBy), orderDir)
 				.stream()
 				.map(this.storyConverter::convertToResp)
 				.collect(Collectors.toList());

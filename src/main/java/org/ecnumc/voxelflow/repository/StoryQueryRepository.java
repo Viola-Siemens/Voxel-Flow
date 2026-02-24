@@ -63,7 +63,7 @@ public class StoryQueryRepository implements PendingRelationQueryable<UserStoryR
 	 * @return 符合条件的故事列表
 	 */
 	public List<Story> list(List<String> titles, @Nullable String status, @Nullable Integer priority,
-						   int pageNum, int pageSize) {
+						   int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		QueryWrapper<Story> queryWrapper = new QueryWrapper<>();
 
 		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
@@ -79,6 +79,23 @@ public class StoryQueryRepository implements PendingRelationQueryable<UserStoryR
 		// 优先级筛选喵~
 		if(priority != null) {
 			queryWrapper.eq("priority", priority);
+		}
+
+		// 排序喵~
+		if(orderBy != null && orderDir != null) {
+			switch(orderDir) {
+				case "asc":
+					queryWrapper.orderByAsc(orderBy);
+					break;
+				case "desc":
+					queryWrapper.orderByDesc(orderBy);
+					break;
+				default:
+					queryWrapper.orderByDesc("updated_at");
+					break;
+			}
+		} else {
+			queryWrapper.orderByDesc("updated_at");
 		}
 
 		return this.storyMapper.selectList(queryWrapper

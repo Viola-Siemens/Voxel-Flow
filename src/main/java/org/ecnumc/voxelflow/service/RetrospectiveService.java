@@ -1,6 +1,7 @@
 package org.ecnumc.voxelflow.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.converter.CamelToSnakeConverter;
 import org.ecnumc.voxelflow.converter.RetrospectiveConverter;
 import org.ecnumc.voxelflow.enumeration.*;
 import org.ecnumc.voxelflow.po.Retrospective;
@@ -41,6 +42,9 @@ public class RetrospectiveService implements Queryable<RetrospectiveResp>, Appro
 
 	@Autowired
 	private RetrospectiveConverter retrospectiveConverter;
+
+	@Autowired
+	private CamelToSnakeConverter camelToSnakeConverter;
 
 	/**
 	 * 创建复盘
@@ -84,13 +88,13 @@ public class RetrospectiveService implements Queryable<RetrospectiveResp>, Appro
 	 */
 	@Override
 	public PagedResp<RetrospectiveResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
-											 int pageNum, int pageSize) {
+											 int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
 		List<String> titles = (title != null && !title.trim().isEmpty()) ?
 				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
 
 		List<RetrospectiveResp> retrospectives = this.retrospectiveQueryRepository
-				.list(titles, status, pageNum, pageSize)
+				.list(titles, status, pageNum, pageSize, this.camelToSnakeConverter.convert(orderBy), orderDir)
 				.stream()
 				.map(this.retrospectiveConverter::convertToResp)
 				.collect(Collectors.toList());

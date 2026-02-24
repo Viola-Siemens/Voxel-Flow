@@ -65,7 +65,7 @@ public class IssueQueryRepository implements PendingRelationQueryable<UserIssueR
 	 * @return 符合条件的问题列表
 	 */
 	public List<Issue> list(List<String> titles, @Nullable String status, @Nullable Integer priority,
-						   int pageNum, int pageSize) {
+						   int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		QueryWrapper<Issue> queryWrapper = new QueryWrapper<>();
 
 		// 标题关键词筛选，所有关键词都需要匹配（AND 关系）喵~
@@ -81,6 +81,23 @@ public class IssueQueryRepository implements PendingRelationQueryable<UserIssueR
 		// 优先级筛选喵~
 		if(priority != null) {
 			queryWrapper.eq("priority", priority);
+		}
+
+		// 排序喵~
+		if(orderBy != null && orderDir != null) {
+			switch(orderDir) {
+				case "asc":
+					queryWrapper.orderByAsc(orderBy);
+					break;
+				case "desc":
+					queryWrapper.orderByDesc(orderBy);
+					break;
+				default:
+					queryWrapper.orderByDesc("updated_at");
+					break;
+			}
+		} else {
+			queryWrapper.orderByDesc("updated_at");
 		}
 
 		return this.issueMapper.selectList(queryWrapper

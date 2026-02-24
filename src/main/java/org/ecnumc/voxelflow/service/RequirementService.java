@@ -1,6 +1,7 @@
 package org.ecnumc.voxelflow.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.ecnumc.voxelflow.converter.CamelToSnakeConverter;
 import org.ecnumc.voxelflow.converter.RequirementConverter;
 import org.ecnumc.voxelflow.enumeration.*;
 import org.ecnumc.voxelflow.po.Requirement;
@@ -43,6 +44,9 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 
 	@Autowired
 	private RequirementConverter requirementConverter;
+
+	@Autowired
+	private CamelToSnakeConverter camelToSnakeConverter;
 
 	/**
 	 * 创建需求
@@ -96,13 +100,13 @@ public class RequirementService implements Queryable<RequirementResp>, Approvabl
 	 */
 	@Override
 	public PagedResp<RequirementResp> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
-										   int pageNum, int pageSize) {
+										   int pageNum, int pageSize, @Nullable String orderBy, @Nullable String orderDir) {
 		// 处理标题关键词，将标题按空格分割成若干个关键词喵~
 		List<String> titles = (title != null && !title.trim().isEmpty()) ?
 				Arrays.asList(title.trim().split("\\s+")) : Collections.emptyList();
 
 		List<RequirementResp> requirements = this.requirementQueryRepository
-				.list(titles, status, priority, pageNum, pageSize)
+				.list(titles, status, priority, pageNum, pageSize, this.camelToSnakeConverter.convert(orderBy), orderDir)
 				.stream()
 				.map(this.requirementConverter::convertToResp)
 				.collect(Collectors.toList());
