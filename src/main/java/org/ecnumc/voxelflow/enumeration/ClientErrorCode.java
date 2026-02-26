@@ -43,7 +43,9 @@ public enum ClientErrorCode implements IErrorCode, Serializable {
 	// 通用场景
 	ERROR_1490(1490, "无效的 Token"),
 	ERROR_1491(1491, "权限不足"),
-	ERROR_1492(1492, "不能选择这位用户");
+	ERROR_1492(1492, "不能选择这位用户"),
+	ERROR_1493(1493, "非法的角色名"),
+	ERROR_1494(1494, "不能重复添加或移除");
 
 	private static final long serialVersionUID = 1L;
 

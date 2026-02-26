@@ -17,7 +17,7 @@ import static org.ecnumc.voxelflow.enumeration.UserRole.*;
 @Getter
 @AllArgsConstructor
 public enum IssueStatus implements IOperableStatus {
-	REVIEWING("审核中", ImmutableSet.of(BUSINESS, DIAGNOSIS)) {
+	REVIEWING("审核中", ImmutableSet.of(BUSINESS, TEST, DIAGNOSIS)) {
 		@Override
 		public IssueStatus approved() {
 			return CONFIRMING;

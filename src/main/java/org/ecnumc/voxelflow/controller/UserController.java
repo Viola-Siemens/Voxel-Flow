@@ -3,11 +3,9 @@ package org.ecnumc.voxelflow.controller;
 import org.ecnumc.voxelflow.enumeration.ClientErrorCode;
 import org.ecnumc.voxelflow.req.UserCommandReq;
 import org.ecnumc.voxelflow.req.UserLogInReq;
+import org.ecnumc.voxelflow.req.UserRoleReq;
 import org.ecnumc.voxelflow.req.UserSignUpReq;
-import org.ecnumc.voxelflow.resp.BaseResp;
-import org.ecnumc.voxelflow.resp.PagedResp;
-import org.ecnumc.voxelflow.resp.TokenResp;
-import org.ecnumc.voxelflow.resp.UserResp;
+import org.ecnumc.voxelflow.resp.*;
 import org.ecnumc.voxelflow.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,10 +33,13 @@ public class UserController {
 	 * @param status		用户状态
 	 * @param pageNum		页码
 	 * @param pageSize		每页数量
+	 * @param request		HTTP 请求
 	 * @return 用户列表
 	 */
 	@GetMapping("/list")
-	public BaseResp<PagedResp<UserResp>> list(@Nullable String username, @Nullable String emailVerified, @Nullable String status,
+	public BaseResp<PagedResp<UserResp>> list(@RequestParam(value = "username") @Nullable String username,
+											  @RequestParam(value = "emailVerified") @Nullable String emailVerified,
+											  @RequestParam(value = "status") @Nullable String status,
 											  @Min(value = 1) @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
 											  @Min(value = 1) @Max(value = 10000) int pageSize,
 											  HttpServletRequest request) {
@@ -80,6 +81,7 @@ public class UserController {
 
 	/**
 	 * 登出
+	 * @param request	HTTP 请求
 	 * @return 登出结果
 	 */
 	@PostMapping("/log-out")
@@ -92,6 +94,7 @@ public class UserController {
 	/**
 	 * 封禁用户
 	 * @param req	请求
+	 * @param request	HTTP 请求
 	 * @return 封禁结果
 	 */
 	@PostMapping("/ban")
@@ -106,13 +109,56 @@ public class UserController {
 
 	/**
 	 * 注销用户
-	 * @param req	请求
+	 * @param req		请求
+	 * @param request	HTTP 请求
 	 * @return 注销结果
 	 */
 	@PostMapping("/delete")
 	public BaseResp<?> delete(@Validated @RequestBody UserCommandReq req, HttpServletRequest request) {
 		String uid = (String) request.getAttribute("uid");
 		ClientErrorCode errorCode = this.userService.delete(req.getUid(), uid);
+		if(errorCode == null) {
+			return BaseResp.success();
+		}
+		return BaseResp.error(errorCode);
+	}
+
+	/**
+	 * 查询用户自己的所有角色
+	 * @param request	HTTP 请求
+	 * @return 用户所有角色
+	 */
+	@GetMapping("/roles")
+	public BaseResp<RolesResp> roles(HttpServletRequest request) {
+		return BaseResp.success(this.userService.getRoles((String) request.getAttribute("uid")));
+	}
+
+	/**
+	 * 授予用户角色
+	 * @param req		请求
+	 * @param request	HTTP 请求
+	 * @return 授予结果
+	 */
+	@PostMapping("/grant-role")
+	public BaseResp<?> grantRole(@Validated @RequestBody UserRoleReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.userService.grantRole(req.getUid(), req.getRole(), uid);
+		if(errorCode == null) {
+			return BaseResp.success();
+		}
+		return BaseResp.error(errorCode);
+	}
+
+	/**
+	 * 移除用户角色
+	 * @param req		请求
+	 * @param request	HTTP 请求
+	 * @return 移除结果
+	 */
+	@PostMapping("/revoke-role")
+	public BaseResp<?> revokeRole(@Validated @RequestBody UserRoleReq req, HttpServletRequest request) {
+		String uid = (String) request.getAttribute("uid");
+		ClientErrorCode errorCode = this.userService.revokeRole(req.getUid(), req.getRole(), uid);
 		if(errorCode == null) {
 			return BaseResp.success();
 		}

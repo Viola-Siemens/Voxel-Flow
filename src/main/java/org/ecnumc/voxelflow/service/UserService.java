@@ -10,6 +10,7 @@ import org.ecnumc.voxelflow.repository.UserCommandRepository;
 import org.ecnumc.voxelflow.repository.UserQueryRepository;
 import org.ecnumc.voxelflow.repository.UserValidationRepository;
 import org.ecnumc.voxelflow.resp.PagedResp;
+import org.ecnumc.voxelflow.resp.RolesResp;
 import org.ecnumc.voxelflow.resp.TokenResp;
 import org.ecnumc.voxelflow.resp.UserResp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -156,5 +157,78 @@ public class UserService {
 			return null;
 		}
 		return ClientErrorCode.ERROR_1492;
+	}
+
+	/**
+	 * 查询用户所有角色
+	 * @param uid	用户 ID
+	 * @return 用户所有角色
+	 */
+	public RolesResp getRoles(String uid) {
+		return RolesResp.builder().roles(
+				this.userQueryRepository.getUserRoles(uid)
+						.stream()
+						.map(UserRole::name)
+						.collect(Collectors.toList())
+		).build();
+	}
+
+	/**
+	 * 授予用户角色
+	 * @param toGrant	将被授予角色的用户 ID
+	 * @param role		授予的角色
+	 * @param uid		操作用户 ID
+	 * @return 错误码，null 表示成功
+	 */
+	@Nullable
+	public ClientErrorCode grantRole(String toGrant, String role, String uid) {
+		List<UserRole> userRoles = this.userQueryRepository.getUserRoles(uid);
+
+		// 检查用户是否有权限授予角色，只有超级管理员可以授予
+		if (!userRoles.contains(UserRole.SUPER_ADMIN)) {
+			log.warn("User {} does not have permission to grant role {} to {}", uid, role, toGrant);
+			return ClientErrorCode.ERROR_1491;
+		}
+
+		// 检查 toGrant 是否存在
+		User user = this.userQueryRepository.getByUid(toGrant);
+		if(user == null) {
+			return ClientErrorCode.ERROR_1492;
+		}
+
+		try {
+			UserRole.valueOf(role);
+		} catch (IllegalArgumentException e) {
+			log.error("Invalid role: " + role, e);
+			return ClientErrorCode.ERROR_1493;
+		}
+
+		if(this.userCommandRepository.addRole(toGrant, role, uid)) {
+			return null;
+		}
+		return ClientErrorCode.ERROR_1494;
+	}
+
+	/**
+	 * 移除用户角色
+	 * @param toRevoke	将被移除角色的用户 ID
+	 * @param role		移除的角色
+	 * @param uid		操作用户 ID
+	 * @return 错误码，null 表示成功
+	 */
+	@Nullable
+	public ClientErrorCode revokeRole(String toRevoke, String role, String uid) {
+		List<UserRole> userRoles = this.userQueryRepository.getUserRoles(uid);
+
+		// 检查用户是否有权限移除角色，只有超级管理员可以移除
+		if (!userRoles.contains(UserRole.SUPER_ADMIN)) {
+			log.warn("User {} does not have permission to revoke role {} from {}", uid, role, toRevoke);
+			return ClientErrorCode.ERROR_1491;
+		}
+
+		if(this.userCommandRepository.revokeRole(toRevoke, role)) {
+			return null;
+		}
+		return ClientErrorCode.ERROR_1494;
 	}
 }
