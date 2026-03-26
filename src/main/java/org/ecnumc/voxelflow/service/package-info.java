@@ -1,3 +1,7 @@
+/**
+ * Service 层，存放封装所有业务方法的类，衔接数据和请求路由
+ * @author liudongyu
+ */
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

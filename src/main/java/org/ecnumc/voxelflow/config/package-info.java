@@ -1,3 +1,7 @@
+/**
+ * 这个包内存放了项目所有的配置类
+ * @author liudongyu
+ */
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

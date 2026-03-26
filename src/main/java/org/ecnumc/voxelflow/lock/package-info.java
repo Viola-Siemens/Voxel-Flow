@@ -1,3 +1,7 @@
+/**
+ * 分布式锁
+ * @author liudongyu
+ */
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

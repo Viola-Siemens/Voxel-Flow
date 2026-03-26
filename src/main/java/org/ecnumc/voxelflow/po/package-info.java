@@ -1,3 +1,7 @@
+/**
+ * 持久化对象
+ * @author liudongyu
+ */
 @FieldsAreNullableByDefault
 @MethodsReturnNullableByDefault
 @ParametersAreNullableByDefault

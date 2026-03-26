@@ -1,3 +1,7 @@
+/**
+ * 响应对象，存放所有接口响应的 JSON Schema
+ * @author liudongyu
+ */
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

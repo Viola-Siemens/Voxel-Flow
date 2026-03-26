@@ -1,3 +1,7 @@
+/**
+ * 工具类
+ * @author liudongyu
+ */
 @FieldsAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
