@@ -17,6 +17,9 @@ import static org.ecnumc.voxelflow.enumeration.UserRole.*;
 @Getter
 @AllArgsConstructor
 public enum RequirementStatus implements IOperableStatus {
+	/**
+	 * 审核中状态，由业务、诊断角色审核需求的合理性和必要性喵~
+	 */
 	REVIEWING("审核中", ImmutableSet.of(BUSINESS, DIAGNOSIS)) {
 		@Override
 		public RequirementStatus approved() {
@@ -28,6 +31,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REJECTED;
 		}
 	},
+	/**
+	 * 三方会签中状态，由产品、信息安全、项目负责人（开发/美术/模型/建筑）进行会签，需所有人批准才能通过喵~
+	 */
 	COUNTERSIGNING("三方会签中", ImmutableSet.of(PRODUCT, SECURITY, DEVELOPMENT, ART, MODEL, BUILDING)) {	//产品、信息安全、项目负责人
 		@Override
 		public RequirementStatus approved() {
@@ -44,6 +50,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return true;
 		}
 	},
+	/**
+	 * 需求分析中状态，由产品角色进行详细的需求分析和方案设计喵~
+	 */
 	REQUIREMENT_ANALYSIS("需求分析中", ImmutableSet.of(PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
@@ -55,6 +64,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REJECTED;
 		}
 	},
+	/**
+	 * 需求评审中状态，由开发、架构、测试、美术、模型、建筑角色评审需求方案，需所有人批准才能通过喵~
+	 */
 	REQUIREMENT_REVIEWING("需求评审中", ImmutableSet.of(DEVELOPMENT, ARCHITECTURE, TEST, ART, MODEL, BUILDING)) {
 		@Override
 		public RequirementStatus approved() {
@@ -71,6 +83,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return true;
 		}
 	},
+	/**
+	 * 设计中状态，由架构角色进行技术方案设计和架构规划喵~
+	 */
 	DESIGNING("设计中", ImmutableSet.of(ARCHITECTURE)) {
 		@Override
 		public RequirementStatus approved() {
@@ -82,6 +97,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REQUIREMENT_ANALYSIS;
 		}
 	},
+	/**
+	 * 排期中状态，由产品角色进行开发任务拆分和时间排期喵~
+	 */
 	SCHEDULING("排期中", ImmutableSet.of(PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
@@ -93,6 +111,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REJECTED;
 		}
 	},
+	/**
+	 * 开发中状态，由开发、美术、模型、建筑角色进行功能开发和资源制作喵~
+	 */
 	DEVELOPING("开发中", ImmutableSet.of(DEVELOPMENT, ART, MODEL, BUILDING)) {
 		@Override
 		public RequirementStatus approved() {
@@ -104,6 +125,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return SCHEDULING;
 		}
 	},
+	/**
+	 * 测试中状态，由测试角色进行功能测试和质量验证喵~
+	 */
 	TESTING("测试中", ImmutableSet.of(TEST)) {
 		@Override
 		public RequirementStatus approved() {
@@ -115,6 +139,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return DEVELOPING;
 		}
 	},
+	/**
+	 * 验收中状态，由业务、产品角色验收需求实现效果喵~
+	 */
 	CHECKING("验收中", ImmutableSet.of(BUSINESS, PRODUCT)) {
 		@Override
 		public RequirementStatus approved() {
@@ -126,6 +153,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return DEVELOPING;
 		}
 	},
+	/**
+	 * 已发布状态，需求已上线发布，流程结束喵~
+	 */
 	RELEASED("已发布", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
@@ -137,6 +167,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REJECTED;
 		}
 	},
+	/**
+	 * 已打回状态，需求在某个阶段被拒绝，需要重新审核或关闭喵~
+	 */
 	REJECTED("已打回", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
@@ -148,6 +181,9 @@ public enum RequirementStatus implements IOperableStatus {
 			return REJECTED;
 		}
 	},
+	/**
+	 * 已取消状态，需求被主动取消，不再继续执行喵~
+	 */
 	CANCELED("已取消", ImmutableSet.of()) {
 		@Override
 		public RequirementStatus approved() {
