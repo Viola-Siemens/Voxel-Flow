@@ -180,6 +180,7 @@ public class StoryCommandRepository implements OperatingRelationAssignable<Story
 	 * @param status		新的状态
 	 * @param operator		下一位责任人
 	 * @param updatedBy		更新人
+	 * @return true 撤销成功，false 撤销失败
 	 */
 	@Override
 	public boolean unassignOperator(String code, StoryStatus status, String operator, String updatedBy) {

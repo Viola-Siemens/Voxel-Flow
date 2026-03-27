@@ -172,6 +172,7 @@ public class RequirementCommandRepository implements OperatingRelationAssignable
 	 * @param status		新的状态
 	 * @param operator		下一位责任人
 	 * @param updatedBy		更新人
+	 * @return true 撤销成功，false 撤销失败
 	 */
 	@Override
 	public boolean unassignOperator(String code, RequirementStatus status, String operator, String updatedBy) {

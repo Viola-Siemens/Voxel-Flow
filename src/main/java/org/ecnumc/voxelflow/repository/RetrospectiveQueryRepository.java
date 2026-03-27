@@ -43,6 +43,8 @@ public class RetrospectiveQueryRepository implements PendingRelationQueryable<Us
 	 * @param status	状态
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
+	 * @param orderBy	排序字段
+	 * @param orderDir	排序方向
 	 * @return 符合条件的复盘列表
 	 */
 	public List<Retrospective> list(List<String> titles, @Nullable String status,

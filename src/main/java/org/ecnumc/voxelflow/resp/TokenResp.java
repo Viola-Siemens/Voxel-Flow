@@ -5,6 +5,10 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * 登录响应
+ * @author liudongyu
+ */
 @Data
 @Builder
 public class TokenResp implements Serializable {

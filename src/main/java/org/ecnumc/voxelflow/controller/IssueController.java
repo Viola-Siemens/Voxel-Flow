@@ -98,6 +98,8 @@ public class IssueController {
 	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	每页数量
+	 * @param orderBy	排序字段
+	 * @param orderDir	排序方向
 	 * @return 缺陷列表
 	 */
 	@GetMapping("/list")

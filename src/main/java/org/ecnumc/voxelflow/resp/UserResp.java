@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * 用户信息响应
+ * @author liudongyu
+ */
 @Data
 @Builder
 @NoArgsConstructor

@@ -20,9 +20,12 @@ public class CommitCommandRepository {
 
 	/**
 	 * 添加一条提交记录
+	 * @param commitId	提交 ID
+	 * @param repoUrl	仓库 URL
 	 * @param type		提交类型
 	 * @param code		故事/问题/需求编号
 	 * @param message	提交信息
+	 * @param commitUrl	提交 URL
 	 * @param uid		提交人
 	 */
 	public void add(String commitId, String repoUrl, String type, String code, String message,

@@ -30,6 +30,7 @@ public class CommitQueryService {
 	 * @param uid		提交人
 	 * @param pageNum	页数
 	 * @param pageSize	页内最大元素数
+	 * @return 指定用户所有提交记录
 	 */
 	public PagedResp<CommitResp> queryUser(@Nullable String uid, int pageNum, int pageSize) {
 		if(uid == null) {
@@ -55,6 +56,7 @@ public class CommitQueryService {
 	 * @param uid		提交人
 	 * @param pageNum	页数
 	 * @param pageSize	页内最大元素数
+	 * @return 指定编号内容对应的提交记录
 	 */
 	public PagedResp<CommitResp> queryCode(String code, @Nullable String type, @Nullable String uid, int pageNum, int pageSize) {
 		if(type == null) {

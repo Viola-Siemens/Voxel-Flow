@@ -95,6 +95,8 @@ public class RetrospectiveController {
 	 * @param status	状态
 	 * @param pageNum	页码
 	 * @param pageSize	每页数量
+	 * @param orderBy	排序字段
+	 * @param orderDir	排序方向
 	 * @return 复盘列表
 	 */
 	@GetMapping("/list")

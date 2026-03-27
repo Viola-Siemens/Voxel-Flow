@@ -62,6 +62,8 @@ public class IssueQueryRepository implements PendingRelationQueryable<UserIssueR
 	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
+	 * @param orderBy	排序字段
+	 * @param orderDir	排序方向
 	 * @return 符合条件的问题列表
 	 */
 	public List<Issue> list(List<String> titles, @Nullable String status, @Nullable Integer priority,

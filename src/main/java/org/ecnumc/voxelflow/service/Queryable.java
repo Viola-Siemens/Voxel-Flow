@@ -25,6 +25,8 @@ public interface Queryable<R extends Serializable> {
 	 * @param priority	优先级
 	 * @param pageNum	页码
 	 * @param pageSize	页大小
+	 * @param orderBy	排序字段
+	 * @param orderDir	排序方向
 	 * @return 查询结果
 	 */
 	PagedResp<R> list(@Nullable String title, @Nullable String status, @Nullable Integer priority,
