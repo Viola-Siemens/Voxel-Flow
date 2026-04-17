@@ -27,6 +27,16 @@ public class UserController {
 	private UserService userService;
 
 	/**
+	 * 获取用户信息
+	 * @param uid	用户 ID
+	 * @return 用户信息
+	 */
+	@GetMapping("/get")
+	public BaseResp<UserResp> get(@RequestParam(value = "uid") String uid) {
+		return BaseResp.success(this.userService.getByUid(uid));
+	}
+
+	/**
 	 * 获取用户列表
 	 * @param username		用户名关键字
 	 * @param emailVerified	邮箱验证状态

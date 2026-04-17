@@ -42,6 +42,16 @@ public class UserService {
 	private UserConverter userConverter;
 
 	/**
+	 * 根据 Uid 查询用户
+	 * @param uid	用户 ID
+	 * @return 用户
+	 */
+	@Nullable
+	public UserResp getByUid(String uid) {
+		return userConverter.convertToResp(this.userQueryRepository.getByUid(uid));
+	}
+
+	/**
 	 * 查询用户列表，支持根据用户名、邮箱验证状态、用户状态筛选喵~
 	 *
 	 * @param username		用户名关键字
