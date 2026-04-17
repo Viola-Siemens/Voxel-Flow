@@ -2,6 +2,18 @@
 
 本文件为 Claude Code (claude.ai/code) 提供在此代码仓库中工作的指导喵~
 
+## 文档基线
+
+本文档最后同步于 commit `c696208332e626ee834b093f4f788f49f498fd67`。在此之后的代码变更可通过以下命令快速了解，无需重新全量阅读代码库喵~
+
+```bash
+# 查看基线之后的所有变更
+git log c696208..HEAD --oneline
+
+# 查看具体文件改动
+git diff c696208..HEAD
+```
+
 ## 项目概述
 
 VoxelFlow 是一个为 Minecraft 模组/插件开发团队设计的项目管理平台，实现从需求提交到发布的完整产研流程管理喵~
@@ -9,6 +21,8 @@ VoxelFlow 是一个为 Minecraft 模组/插件开发团队设计的项目管理�
 **核心业务流程**：需求创建 → 多方会签 → 产品分析 → 需求评审 → 技术设计 → 排期 → 开发 → 测试 → 验收 → 发布
 
 **技术栈**：Spring Boot 2.6.7 + MyBatis Plus 3.5.14 + MySQL + Redis + MapStruct + Lombok
+
+**Java 版本**：Java 8（`sourceCompatibility = '8'`），注意全局 CLAUDE.md 默认 Java 17，本项目以此处为准喵~
 
 ## 构建与运行命令
 
@@ -150,7 +164,8 @@ Database (MySQL)
 - 关联到 Story 或 Issue
 
 **Group（团队）**：用户组/团队管理
-- 用户可以加入多个团队
+- 用户只能加入一个团队，但可以退出团队后加入新的团队
+- 加入团队的历史会被保存（逻辑删除）
 
 **User（用户）**：平台用户
 - 12 种角色：BUSINESS, PRODUCT, SECURITY, ARCHITECTURE, DEVELOPMENT, TEST, OPERATION, ART, MODEL, BUILDING, DIAGNOSIS, SUPER_ADMIN
@@ -469,8 +484,13 @@ test(REQ-1): 添加需求服务单元测试
 **用户管理 (`/user`)**：
 - POST `/sign-up` - 用户注册（无需 token）
 - POST `/log-in` - 用户登录（无需 token）
-- GET `/query` - 查询用户信息
+- GET `/get` - 查询用户信息
 - GET `/list` - 用户列表查询
+- POST `/ban` - 封禁用户
+- POST `/delete` - 注销用户
+- GET `/roles` - 查询用户所有角色
+- POST `/grant-role` - 授予用户角色（仅超级管理员可用）
+- POST `/revoke-role` - 移除用户角色（仅超级管理员可用）
 
 **需求管理 (`/requirement`)**：
 - POST `/create` - 创建需求
